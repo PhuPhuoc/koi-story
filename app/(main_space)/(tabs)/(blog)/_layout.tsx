@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import BlogPage from './index';
+import BlogPage from './blog';
 import ConsultPage from './consult';
 import MarketPage from './market';
 
@@ -9,7 +9,7 @@ export default function BlogLayout() {
     return (
         <TopTabs.Navigator>
             <TopTabs.Screen
-                name="index"
+                name="blog"
                 component={BlogPage}
                 options={{ title: 'Blogs' }}
             />

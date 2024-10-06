@@ -1,9 +1,23 @@
 import { Stack } from 'expo-router/stack';
+import { AuthProvider } from '../context/auth.context';
 
-export default function Layout() {
+const MainLayoutStack = () => {
     return (
         <Stack>
-            <Stack.Screen name="(bottom_tab)" options={{ headerShown: false }} />
+            <Stack.Screen
+                name="(main_space)/(tabs)"
+                options={{ headerShown: false }}
+            />
         </Stack>
     );
-}
+};
+
+const Layout = () => {
+    return (
+        <AuthProvider>
+            <MainLayoutStack />
+        </AuthProvider>
+    );
+};
+
+export default Layout;

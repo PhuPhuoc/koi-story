@@ -1,9 +1,12 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
+import MyTabBar from '../../../components/bottom_tab';
 
 export default function TabLayout() {
     return (
-        <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
+        <Tabs
+            tabBar={props => <MyTabBar {...props} />}
+            screenOptions={{ tabBarActiveTintColor: 'blue' }}>
             <Tabs.Screen
                 name="(blog)"
                 options={{
@@ -22,13 +25,6 @@ export default function TabLayout() {
                 name="(user)"
                 options={{
                     title: 'User',
-                    tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" size={24} color={color} />,
-                }}
-            />
-            <Tabs.Screen
-                name="test"
-                options={{
-                    title: 'Test',
                     tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" size={24} color={color} />,
                 }}
             />

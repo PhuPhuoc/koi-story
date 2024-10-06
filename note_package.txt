@@ -8,3 +8,4 @@ expo-status-bar
 @react-navigation/native-stack
 @react-navigation/material-top-tabs
 @react-navigation/bottom-tabs
+react-native-reanimated
