@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router/stack';
-import { AuthProvider } from '../context/auth.context';
 
 const MainLayoutStack = () => {
     return (
@@ -13,11 +12,7 @@ const MainLayoutStack = () => {
 };
 
 const Layout = () => {
-    return (
-        <AuthProvider>
-            <MainLayoutStack />
-        </AuthProvider>
-    );
+    return <MainLayoutStack />
 };
 
 export default Layout;

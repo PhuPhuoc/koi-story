@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
 
-const duumyEmail: string = "phuoc"
+const duumyEmail: string = "tam"
 const duumyPass: string = "123"
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

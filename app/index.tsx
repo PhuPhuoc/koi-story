@@ -1,14 +1,12 @@
-import { Redirect, router } from "expo-router"
-import { Button, Text, View } from "react-native"
+import { AuthProvider } from "../context/auth.context";
+import LoginPage from "./(main_space)/login/login_page"
 
-const LogginPage = () => {
-    // return (
-    //     <View>
-    //         <Text>LogginPage</Text>
-    //         <Button onPress={() => router.push("/(tabs)/blog")} title="Click hear"></Button>
-    //     </View>
-    // )
-    return <Redirect href={"/(tabs)/blog"} />
+const IndexPage = () => {
+    return (
+        <AuthProvider>
+            <LoginPage />
+        </AuthProvider>
+    );
 }
 
-export default LogginPage
+export default IndexPage
