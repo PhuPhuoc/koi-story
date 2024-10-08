@@ -1,6 +1,5 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { View, Text, TouchableOpacity, StyleSheet, LayoutChangeEvent } from 'react-native';
-import Feather from '@expo/vector-icons/Feather';
+import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import TabbarButton from './tabbar_btn';
 import { useState } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
@@ -51,7 +50,7 @@ const MyTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
                 const isFocused = state.index === index;
 
                 const onPress = () => {
-                    tabPositionX.value = withSpring(btnWidth * index, {duration: 1500})
+                    tabPositionX.value = withSpring(btnWidth * index, { duration: 1500 })
                     const event = navigation.emit({
                         type: 'tabPress',
                         target: route.key,

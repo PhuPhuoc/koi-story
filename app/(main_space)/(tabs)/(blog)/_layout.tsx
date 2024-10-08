@@ -16,7 +16,7 @@ export default function BlogLayout() {
             <TopTabs.Screen
                 name="market"
                 component={MarketPage}
-                options={{ title: 'Consults' }}
+                options={{ title: 'Market' }}
             />
             <TopTabs.Screen
                 name="consult"

@@ -7,7 +7,7 @@ import { AnimatedText } from 'react-native-reanimated/lib/typescript/reanimated2
 const icon = {
     "(blog)": (props: any) => <Feather name="home" size={24} {...props} />,
     "(member)": (props: any) => <Feather name="compass" size={24} {...props} />,
-    "(user)": (props: any) => <Feather name="user" size={24} {...props} />
+    "(user_info)": (props: any) => <Feather name="user" size={24} {...props} />
 }
 
 const TabbarButton = ({ onPress, onLongPress, isFocused, routeName, label }: { onPress: (event: GestureResponderEvent) => void, onLongPress: (event: GestureResponderEvent) => void, isFocused: boolean, routeName: string, label: any }) => {

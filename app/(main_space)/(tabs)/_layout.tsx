@@ -1,6 +1,6 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
-import MyTabBar from '../../../components/bottom_tab';
+import MyTabBar from '../../../components/bottom_tab/bottom_tab';
 
 export default function TabLayout() {
     return (
@@ -22,7 +22,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="(user)"
+                name="(user_info)"
                 options={{
                     title: 'User',
                     tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" size={24} color={color} />,
