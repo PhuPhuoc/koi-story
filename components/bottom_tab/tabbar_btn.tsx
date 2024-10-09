@@ -1,8 +1,7 @@
-import { View, Text, Pressable, StyleSheet, GestureResponderEvent } from 'react-native'
+import { Pressable, StyleSheet, GestureResponderEvent } from 'react-native'
 import React, { useEffect } from 'react'
 import Feather from '@expo/vector-icons/Feather';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { AnimatedText } from 'react-native-reanimated/lib/typescript/reanimated2/component/Text';
 
 const icon = {
     "(blog)": (props: any) => <Feather name="home" size={24} {...props} />,

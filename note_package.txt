@@ -9,3 +9,5 @@ expo-status-bar
 @react-navigation/material-top-tabs
 @react-navigation/bottom-tabs
 react-native-reanimated
+expo-linear-gradient
+@react-native-masked-view/masked-view

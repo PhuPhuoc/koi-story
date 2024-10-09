@@ -3,55 +3,37 @@ import React from 'react'
 import { router, Stack } from 'expo-router'
 import { THEME_COLOR } from '../../../constants/const';
 import Entypo from '@expo/vector-icons/Entypo';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Feather from '@expo/vector-icons/Feather';
 
 const handleGoback = () => {
     router.back()
 }
 
-const RegisterPage = () => {
+const ForgetPasswordPage = () => {
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ headerShown: false }} />
             <ImageBackground
-                source={require('../../../assets/register_bg.jpg')}
+                source={require('../../../assets/forget_bg2.jpg')}
                 style={styles.header}
                 resizeMode="cover"
             >
                 <Pressable onPress={handleGoback}>
                     <Image
-                        source={require('../../../assets/icon_back2.png')}
+                        source={require('../../../assets/icon_back1.png')}
                         style={styles.iconback}
                         resizeMode="center"
 
                     />
                 </Pressable>
                 <View style={styles.headerText}>
-                    <Text style={styles.feng}>Feng</Text>
-                    <Text style={styles.shui}>Shui</Text>
+                    {/* <Text style={styles.feng}>Feng</Text>
+                    <Text style={styles.shui}>Shui</Text> */}
                 </View>
             </ImageBackground>
-            <Text style={styles.createacc}>Create a new account</Text>
+            <Text style={styles.title}>Password Assistance</Text>
+            <Text style={styles.titleDetail}>Enter the email address associated with your Koi Story account</Text>
+
             <View style={styles.formContainer}>
-                <View style={styles.formView}>
-                    <Feather name="user" size={20} color="#CDC9C9" />
-                    <View style={styles.line}></View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="User Name"
-                        keyboardType="email-address"
-                    />
-                </View>
-                <View style={styles.formView}>
-                    <Feather name="phone" size={20} color="#CDC9C9" />
-                    <View style={styles.line}></View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Phone Number"
-                        keyboardType="phone-pad"
-                    />
-                </View>
                 <View style={styles.formView}>
                     <Entypo name="email" size={20} color="#CDC9C9" />
                     <View style={styles.line}></View>
@@ -61,32 +43,13 @@ const RegisterPage = () => {
                         keyboardType="email-address"
                     />
                 </View>
-                <View style={styles.formView}>
-                    <MaterialCommunityIcons name="lock-check-outline" size={20} color="#CDC9C9" />
-                    <View style={styles.line}></View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        secureTextEntry
-                    />
-                </View>
-                <View style={styles.formView}>
-                    <MaterialCommunityIcons name="lock-check" size={20} color="#CDC9C9" />
-                    <View style={styles.line}></View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Confirm Password"
-                        secureTextEntry
-                    />
-                </View>
-                <Pressable style={styles.registerButton}>
-                    <Text style={styles.registerButtonText}>REGISTER</Text>
+                <Pressable style={styles.continueButton}>
+                    <Text style={styles.continueButtonText}>CONTINUE</Text>
                 </Pressable>
 
-                <View style={styles.registerContainer}>
-                    <Text style={styles.loginText}>Already have an account? </Text>
+                <View style={styles.gobackContainer}>
                     <Pressable onPress={handleGoback}>
-                        <Text style={styles.loginLink}>LOGIN</Text>
+                        <Text style={styles.goback}>Go back</Text>
                     </Pressable>
                 </View>
             </View>
@@ -100,19 +63,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     header: {
-        marginTop: 35,
-        paddingVertical: 20,
-        // borderColor: "red",
-        // borderWidth: 1
+        paddingTop: 20,
+        width: "100%",
+        height: 350,
+        borderColor: "red",
+        borderWidth: 1
     },
     iconback: {
+        marginTop: 35,
+        marginLeft: 7,
         width: "15%",
         height: 60,
     },
     headerText: {
         paddingHorizontal: 20,
         paddingVertical: 10,
-        marginBottom: 20,
+        // marginBottom: 20,
         flexDirection: "row",
         justifyContent: "space-between",
         // borderColor: "red",
@@ -128,15 +94,20 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         paddingEnd: 23
     },
-    createacc: {
+    title: {
         paddingHorizontal: 30,
-        // paddingVertical: 10,
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: "bold",
-        marginTop: 10,
+        marginTop: 20,
+    },
+    titleDetail: {
+        fontSize: 15,
+        fontWeight: "bold",
+        paddingHorizontal: 30,
+        paddingVertical: 10,
     },
     formContainer: {
-        marginTop: 10,
+        marginTop: 25,
         paddingHorizontal: 20
     },
     welcomeContainer: {
@@ -175,29 +146,27 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
     },
-    registerButton: {
+    continueButton: {
         backgroundColor: THEME_COLOR,
-        marginTop: 20,
+        marginTop: 10,
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderRadius: 30,
         alignItems: 'center',
     },
-    registerButtonText: {
+    continueButtonText: {
         fontSize: 17,
         color: 'white',
         fontWeight: 'bold',
     },
-    registerContainer: {
+    gobackContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: "center",
         marginTop: 20,
     },
-    loginText: {
-        fontWeight: "bold"
-    },
-    loginLink: {
+    goback: {
+        fontSize: 17,
         marginStart: 7,
         color: THEME_COLOR,
         fontWeight: 'bold',
@@ -206,4 +175,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RegisterPage;
+export default ForgetPasswordPage;

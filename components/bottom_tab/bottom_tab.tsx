@@ -3,6 +3,7 @@ import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import TabbarButton from './tabbar_btn';
 import { useState } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { THEME_COLOR } from '../../constants/const';
 
 const MyTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
     const [dimensions, setDimensions] = useState({ height: 20, width: 100 })
@@ -30,7 +31,7 @@ const MyTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
         <View onLayout={onTabbarLayout} style={styles.tabbar}>
             <Animated.View style={[animatedStyle, {
                 position: "absolute",
-                backgroundColor: "#00E5EE",
+                backgroundColor: THEME_COLOR,
                 borderRadius: 30,
                 marginHorizontal: 12,
                 height: dimensions.height - 15,
