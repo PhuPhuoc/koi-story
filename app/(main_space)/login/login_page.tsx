@@ -1,21 +1,32 @@
 import { router, Stack } from 'expo-router'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, Pressable } from 'react-native';
 import { THEME_COLOR } from '../../../constants/const';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import GradientText from '../../../components/gradient_text/gradient_text';
+import { LoginWithEmailPassword } from '../../../api/auth_api';
+
 
 const LoginPage = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const handlePressRegister = () => {
         router.push("/register/register_page")
     }
     const handlePressForgetPassword = () => {
         router.push("/forget_pass/forget_password_page")
     }
-    const handlePressLogin = () => {
-        router.push("/(tabs)/blog")
-    }
+    const handlePressLogin = async () => {
+        try {
+            const result = await LoginWithEmailPassword(email, password)
+            console.log("🚀 ~ handlePressLogin ~ result:", result);
+            router.push("/(tabs)/blog")
+        } catch (error) {
+            console.error("Login error:", error);
+        }
+    };
 
     const handleGoogleLogin = () => {
         router.push("/(tabs)/blog")
@@ -49,6 +60,8 @@ const LoginPage = () => {
                         style={styles.input}
                         placeholder="Email"
                         keyboardType="email-address"
+                        value={email}
+                        onChangeText={(text) => setEmail(text)}
                     />
                 </View>
                 <View style={styles.emailPassView}>
@@ -58,6 +71,8 @@ const LoginPage = () => {
                         style={styles.input}
                         placeholder="Password"
                         secureTextEntry
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
                     />
                 </View>
 
