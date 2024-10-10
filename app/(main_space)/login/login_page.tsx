@@ -16,6 +16,11 @@ const LoginPage = () => {
     const handlePressLogin = () => {
         router.push("/(tabs)/blog")
     }
+
+    const handleGoogleLogin = () => {
+        router.push("/(tabs)/blog")
+    }
+
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ headerShown: false }} />
@@ -64,6 +69,21 @@ const LoginPage = () => {
                     <Text style={styles.loginButtonText}>LOGIN</Text>
                 </Pressable>
 
+                <View style={styles.orContainer}>
+                    <View style={styles.orline}></View>
+                    <View><Text style={styles.ortxt}>or</Text></View>
+                    <View style={styles.orline}></View>
+                </View>
+
+                <Pressable style={styles.loginGGButton} onPress={handleGoogleLogin}>
+                    <Image
+                        source={require('../../../assets/google-symbol.png')}
+                        style={styles.iconGG}
+                        resizeMode="center"
+                    />
+                    <Text style={styles.loginButtonText}>GOOGLE</Text>
+                </Pressable>
+
                 <View style={styles.registerContainer}>
                     <Text style={styles.registerText}>Don't have account? </Text>
                     <Pressable onPress={handlePressRegister}>
@@ -94,7 +114,7 @@ const styles = StyleSheet.create({
     welcomeContainer: {
         alignItems: "flex-start",
         paddingStart: 7,
-        marginBottom: 20,
+        // marginBottom: 20,
     },
     titleContainer: {
         flexDirection: "row",
@@ -181,6 +201,35 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         borderBottomColor: THEME_COLOR,
         borderBottomWidth: 2,
+    },
+    orContainer: {
+        marginVertical: 12,
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+    },
+    orline: {
+        height: 1,
+        width: 100,
+        borderColor: "#EEEEEE",
+        borderWidth: 1
+    },
+    ortxt: {
+        color: '#8B8989',
+    },
+    iconGG: {
+        width: 20,
+        height: 20,
+        marginEnd: 15
+    },
+    loginGGButton: {
+        backgroundColor: THEME_COLOR,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 30,
+        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "center"
     },
 });
 
