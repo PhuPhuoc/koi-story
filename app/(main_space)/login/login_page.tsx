@@ -1,11 +1,11 @@
 import { router, Stack } from 'expo-router'
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, Pressable } from 'react-native';
 import { THEME_COLOR } from '../../../constants/const';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import GradientText from '../../../components/gradient_text/gradient_text';
-import { LoginWithEmailPassword } from '../../../api/auth_api';
+import { LoginWithEmailPassword } from '../../../api/authen/auth_api';
 
 
 const LoginPage = () => {
@@ -20,8 +20,8 @@ const LoginPage = () => {
     }
     const handlePressLogin = async () => {
         try {
-            const result = await LoginWithEmailPassword(email, password)
-            console.log("🚀 ~ handlePressLogin ~ result:", result);
+            // const result = await LoginWithEmailPassword(email, password)
+            // set context for logged in user
             router.push("/(tabs)/blog")
         } catch (error) {
             console.error("Login error:", error);
@@ -249,15 +249,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginPage
-
-// const LoginPage = () => {
-//     return (
-//         <View>
-//             <Stack.Screen options={{ headerTitle: "Login Page" }} />
-//             <Text>LoginPage</Text>
-//             <Button onPress={() => router.push("/(tabs)/blog")} title="Login"></Button>
-//             <Button onPress={() => router.push("/register/register_page")} title="Register"></Button>
-//         </View>
-//     )
-// }
-// export default LoginPage
