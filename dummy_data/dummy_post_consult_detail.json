@@ -1,0 +1,26 @@
+{
+    "id":1,
+    "user_feng_shui":[
+        {
+            "display_name": "Tam",
+            "profile_picture_url": "https://st2.depositphotos.com/3557671/11465/v/950/depositphotos_114656902-stock-illustration-girl-icon-cartoon-single-avatarpeaople.jpg",
+            "feng_shui": "Water"
+        }
+    ],
+    "post":[
+        {
+            "title": "",
+            "overview":"Overview of consult",
+            "created_at": "10/10/2024"
+        }
+    ], 
+    "question": "Which of the following pond designs should I choose to suit my feng shui destiny?",
+    "image": [
+        {
+            "imgURL1": "https://zenkoifarm.vn/wp-content/uploads/ho-ca-koi-trong-phong-khach_2-1.jpg.webp",
+            "imgURL2": "https://zenkoifarm.vn/wp-content/uploads/ho-ca-koi-trong-phong-khach_7.jpg",
+            "imgURL3": "https://hocakoitrungtin.com/wp-content/uploads/2021/12/ho-ca-koi-dep-2.jpg",
+            "imgURL4": "https://hocakoimiennam.vn/img_data/images/FB_IMG_1641864107395%5B1%5D.jpg"
+        }
+    ]
+}
