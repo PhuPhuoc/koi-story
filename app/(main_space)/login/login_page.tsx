@@ -37,7 +37,7 @@ const LoginPage = () => {
             <Stack.Screen options={{ headerShown: false }} />
             <View style={styles.imageContainer}>
                 <Image
-                    source={require('../../../assets/bg_login1.png')}
+                    source={require('../../../assets/background_login.png')}
                     style={styles.image}
                     resizeMode="center"
                 />
