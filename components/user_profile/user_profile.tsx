@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, Button, FlatList } from 'react-native';
 import dataProfile from '../../dummy_data/dummy_user_profile.json';
 import UserFengShui from './user_feng_shui';
 import FengShuiModal from './feng_shui_modal';
@@ -26,24 +26,21 @@ const UserProfileScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>User Profile</Text>
-      <Image
-        source={{ uri: profile_picture_url }}
-        style={styles.profileImage}
-      />
-      <Text style={styles.name}>{display_name}</Text>
-      <Text style={styles.userType}>{user_type}</Text>
-      <UserFengShui/>
-
-      <Button title="Feng Shui Calculator" onPress={openModal} />
-
-      <FengShuiModal
-        visible={modalVisible}
-        onClose={closeModal}
-        onSave={saveYearOfBirth}
-      />
-    </View>
+    <FlatList
+      data={[{key: '1'}]} 
+      renderItem={() => (
+        <View style={styles.container}>
+          <Text style={styles.title}>User Profile</Text>
+          <Image source={{ uri: profile_picture_url }} style={styles.profileImage} />
+          <Text style={styles.name}>{display_name}</Text>
+          <Text style={styles.userType}>{user_type}</Text>
+          <UserFengShui />
+          <Button title="Feng Shui Calculator" onPress={openModal} />
+          <FengShuiModal visible={modalVisible} onClose={closeModal} onSave={saveYearOfBirth} />
+        </View>
+      )}
+      keyExtractor={(item) => item.key}
+    />
   );
 };
 
