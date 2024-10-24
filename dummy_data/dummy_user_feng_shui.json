@@ -1,0 +1,22 @@
+{
+    "id": 1,
+    "user_id": 1,
+    "year_of_birth": 1996,
+    "feng_shui": "Water",
+    "recommended_koi": [
+        {
+            "koi_id": 1,
+            "type": "Karasu",
+            "color": "black",
+            "size": "15cm",
+            "old": "4 month"
+        },
+        {
+            "koi_id": 2,
+            "type": "Karasu",
+            "color": "black",
+            "size": "25cm",
+            "old": "12 month"
+        }
+    ]
+}
