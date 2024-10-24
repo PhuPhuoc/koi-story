@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "title": "Blog 1",
+        "author": "Author 1",
+        "image": "https://m.media-amazon.com/images/I/71yL1rYRRGL._SX522_.jpg",
+        "content": "This is the content of Blog 1"
+    },
+    {
+        "id": 2,
+        "title": "Blog 2",
+        "author": "Author 1",
+        "image": "https://m.media-amazon.com/images/I/71yL1rYRRGL._SX522_.jpg",
+        "content": "This is the content of Blog 2"
+    },
+    {
+        "id": 3,
+        "title": "Blog 3",
+        "author": "Author 2",
+        "image": "https://m.media-amazon.com/images/I/71yL1rYRRGL._SX522_.jpg",
+        "content": "This is the content of Blog 3"
+    }
+]
