@@ -1,16 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import PostHeader from './post_header';
-import PostContent from './post_content';
-import ImageCarousel from './image_carousel';
-import dummyPostConsultData from '../../dummy_data/dummy_post_consult_detail.json';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import PostHeader from "./post_header";
+import PostContent from "./post_content";
+import ImageCarousel from "./image_carousel";
+import dummyPostConsultData from "../../dummy_data/dummy_post_consult_detail.json";
+
+interface FengShuiUser {
+  display_name: string;
+  profile_picture_url: string;
+  feng_shui: string;
+}
+
+interface PostDetails {
+  title: string;
+  overview: string;
+  created_at: string;
+}
+
+interface ImageUrls {
+  imgURL1: string;
+  imgURL2: string;
+  imgURL3: string;
+  imgURL4: string;
+}
+
+interface PostConsultData {
+  id: number;
+  user_feng_shui: FengShuiUser[];
+  post: PostDetails[];
+  question: string;
+  image: ImageUrls[];
+}
 
 const PostConsult = () => {
-  const [postData, setPostData] = useState(null);
+  const [postData, setPostData] = useState<PostConsultData | null>(
+    dummyPostConsultData
+  );
 
   useEffect(() => {
-    // Load data from dummy-post-consult-detail.json
-    setPostData(dummyPostConsultData);
+    setPostData(dummyPostConsultData as PostConsultData);
   }, []);
 
   if (!postData) {
@@ -22,37 +50,37 @@ const PostConsult = () => {
   }
 
   const sections = [
-    { type: 'header', data: postData },
-    { type: 'content', data: postData },
-    { type: 'images', data: postData.image }
+    { type: "header", data: postData },
+    { type: "content", data: postData },
+    { type: "images", data: postData.image },
   ];
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: any) => {
     switch (item.type) {
-      case 'header':
+      case "header":
         return (
-          <PostHeader 
-            displayName={item.data.user_feng_shui[0].display_name} 
-            profilePicture={item.data.user_feng_shui[0].profile_picture_url} 
+          <PostHeader
+            displayName={item.data.user_feng_shui[0].display_name}
+            profilePicture={item.data.user_feng_shui[0].profile_picture_url}
             createdAt={item.data.post[0].created_at}
             feng_Shui={item.data.user_feng_shui[0].feng_shui}
           />
         );
-      case 'content':
+      case "content":
         return (
-          <PostContent 
-            question={item.data.question} 
+          <PostContent
+            question={item.data.question}
             overview={item.data.post[0].overview}
           />
         );
-      case 'images':
+      case "images":
         return (
-          <ImageCarousel 
+          <ImageCarousel
             images={[
               item.data[0].imgURL1,
               item.data[0].imgURL2,
               item.data[0].imgURL3,
-              item.data[0].imgURL4
+              item.data[0].imgURL4,
             ]}
           />
         );
@@ -78,12 +106,12 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
-    fontSize: 30, 
-    fontWeight: 'bold', 
+    fontSize: 30,
+    fontWeight: "bold",
     marginBottom: 20,
     marginTop: 50,
   },
