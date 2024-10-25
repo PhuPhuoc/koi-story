@@ -24,12 +24,14 @@ interface UserProfile {
 const UserProfileScreen = () => {
   const { display_name, profile_picture_url, user_type } =
     dataProfile as UserProfile;
+
   const handleLogOut = () => {
     while (router.canGoBack()) {
       router.back();
     }
     router.replace("/");
   };
+  
   const [yearOfBirth, setYearOfBirth] = useState<number | null>(null);
 
   const [modalVisible, setModalVisible] = useState(false);
