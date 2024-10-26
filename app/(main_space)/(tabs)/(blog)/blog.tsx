@@ -5,11 +5,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import CommentComponent from "../../../../components/comment_modal/comment";
 import CarouselComponent from "../../../../components/carousel/carousel";
+import GradientText from "../../../../components/gradient_text/gradient_text";
 
 const BlogPage = () => {
   const renderItem = ({
@@ -36,23 +37,36 @@ const BlogPage = () => {
   );
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <CarouselComponent />
-      <FlatList
-        data={dummy}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.container}
-      />
+    <GestureHandlerRootView style={styles.root}>
+      <ScrollView>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title1}>Tư vấn cá Koi phong thuỷ</Text>
+        </View>
 
-      <CommentComponent />
+        <View style={styles.iconContainer}>
+          <Text style={styles.title1}>𓆝 𓆟 𓆞 𓆝 𓆟</Text>
+        </View>
+
+        <CarouselComponent />
+
+        <FlatList
+          data={dummy}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          scrollEnabled={false}
+          contentContainerStyle={styles.container}
+        />
+      </ScrollView>
     </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
+  root: {
+    backgroundColor: "#fff",
+  },
   container: {
-    padding: 10,
+    padding: 20,
     paddingBottom: 100,
   },
   card: {
@@ -87,6 +101,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
   },
+  titleContainer: {
+    flexDirection: "row",
+    marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title1: {
+    fontSize: 28,
+    fontWeight: "bold",
+  },
+  iconContainer: {
+    justifyContent: "center",
+    alignItems: "center",  },
 });
 
 export default BlogPage;

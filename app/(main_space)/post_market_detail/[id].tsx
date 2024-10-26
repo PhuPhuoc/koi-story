@@ -17,6 +17,10 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import CommentComponent from "../../../components/comment_modal/comment";
+import dummyFeedback from "../../../dummy_data/dummny_feedback.json";
+import Feedback from "../../../components/feedback/Feedback";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const PostMarketDetail = () => {
   const [selectedImage, setSelectedImage] = useState<string>(
@@ -45,7 +49,7 @@ const PostMarketDetail = () => {
   const renderKoiInfo = () => (
     <View style={styles.koiInfoContainer}>
       <View style={styles.infoRow}>
-      <Text style={styles.title3}>Thông tin chi tiết </Text>
+        <Text style={styles.title3}>Thông tin chi tiết </Text>
         <View style={styles.infoItem}>
           <MaterialCommunityIcons name="palette" size={24} color="#666" />
           <Text style={styles.infoLabel}>Màu sắc:</Text>
@@ -226,12 +230,16 @@ const PostMarketDetail = () => {
           ? renderKoiInfo()
           : renderOtherInfo()}
 
-        <View style={styles.fishContainer}>
+        <GestureHandlerRootView style={styles.container}>
+          <Feedback />
+        </GestureHandlerRootView>
+
+        {/* <View style={styles.fishContainer}>
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
@@ -254,20 +262,20 @@ const styles = StyleSheet.create({
   },
   circularIconBackground: {
     backgroundColor: "red",
-    borderRadius: 20, 
+    borderRadius: 20,
     width: 50,
-    height: 50, 
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
 
   tooltip: {
     position: "absolute",
-    top: -40, // Adjust vertical positioning if necessary
-    left: -120, // Adjust horizontal positioning if necessary
+    top: -40, 
+    left: -120, 
     backgroundColor: "rgba(0, 0, 0, 0.8)",
     paddingVertical: 6,
-    paddingHorizontal: 10, // Adjust horizontal padding for better spacing
+    paddingHorizontal: 10, 
     borderRadius: 5,
     zIndex: 10,
     width: 150,
@@ -275,7 +283,7 @@ const styles = StyleSheet.create({
   tooltipText: {
     color: "#fff",
     fontSize: 14,
-    textAlign: "left", // Align text properly
+    textAlign: "left", 
   },
   backButton: {
     position: "absolute",
@@ -329,38 +337,37 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 15,
     shadowColor: "#000",
-    elevation: 5,
   },
   title: {
     fontSize: 20,
     fontWeight: "500",
     marginBottom: 10,
-    fontStyle:"italic",
+    fontStyle: "italic",
   },
   title2: {
-    marginTop:20,
+    marginTop: 20,
     fontSize: 20,
     fontWeight: "600",
-    color:"#a69f9f",
+    color: "#a69f9f",
     marginBottom: 10,
   },
   title3: {
     fontSize: 20,
     fontWeight: "600",
-    color:"#a69f9f",
+    color: "#a69f9f",
     marginBottom: 20,
   },
   price: {
     fontSize: 18,
-    padding:4,
+    padding: 4,
     color: "#000",
     marginBottom: 7,
-    fontWeight:"900"
+    fontWeight: "900",
   },
   description: {
     fontSize: 16,
     marginBottom: 10,
-    fontWeight:"700",
+    fontWeight: "700",
     lineHeight: 40,
   },
   address: {
@@ -444,8 +451,8 @@ const styles = StyleSheet.create({
   koiInfoContainer: {
     backgroundColor: "white",
     marginHorizontal: 10,
-    marginTop: 20,
-    padding: 20, // Increased padding for better spacing
+    marginBottom: 10,
+    padding: 20, 
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {
@@ -457,10 +464,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   infoRow: {
-    marginBottom: 16, // Even spacing between rows
+    marginBottom: 16, 
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0", // Light border for visual separation
-    paddingBottom: 16, // Padding at bottom of each row
+    borderBottomColor: "#f0f0f0", 
+    paddingBottom: 16,
   },
   infoItem: {
     flexDirection: "row",

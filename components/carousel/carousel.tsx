@@ -1,33 +1,15 @@
 import { Dimensions, Image, StyleSheet, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
-
+import data from "../../dummy_data/dummy_carousel_img.json"
 const CarouselComponent = () => {
   const width = Dimensions.get("window").width;
-
-  const list = [
-    {
-      id: 1,
-      title: "Koi",
-      image: require("../../assets/koi.jpg"),
-    },
-    {
-      id: 2,
-      title: "Koi 2",
-      image: require("../../assets/koi2.jpg"),
-    },
-    {
-      id: 3,
-      title: "Koi 3",
-      image: require("../../assets/koi3.jpg"),
-    },
-  ];
 
   return (
     <View style={styles.container}>
       <Carousel
         width={width}
         height={width / 2}
-        data={list}
+        data={data}
         autoPlay={true}
         autoPlayInterval={3000}
         mode="parallax"
@@ -38,7 +20,7 @@ const CarouselComponent = () => {
         renderItem={({ item }) => {
           return (
             <View style={styles.carouselItem}>
-              <Image style={styles.img} source={item.image} />
+            <Image style={styles.img} source={{ uri: item.image }} />
             </View>
           );
         }}
@@ -50,7 +32,6 @@ const CarouselComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 20,
   },
   carouselItem: {
     borderRadius: 15,
