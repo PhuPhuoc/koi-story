@@ -45,7 +45,7 @@ const PostMarketDetail = () => {
   const renderKoiInfo = () => (
     <View style={styles.koiInfoContainer}>
       <View style={styles.infoRow}>
-      <Text style={styles.title3}>Thông tin chi tiết </Text>
+        <Text style={styles.title3}>Thông tin chi tiết </Text>
         <View style={styles.infoItem}>
           <MaterialCommunityIcons name="palette" size={24} color="#666" />
           <Text style={styles.infoLabel}>Màu sắc:</Text>
@@ -254,9 +254,9 @@ const styles = StyleSheet.create({
   },
   circularIconBackground: {
     backgroundColor: "red",
-    borderRadius: 20, 
+    borderRadius: 20,
     width: 50,
-    height: 50, 
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -335,32 +335,32 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "500",
     marginBottom: 10,
-    fontStyle:"italic",
+    fontStyle: "italic",
   },
   title2: {
-    marginTop:20,
+    marginTop: 20,
     fontSize: 20,
     fontWeight: "600",
-    color:"#a69f9f",
+    color: "#a69f9f",
     marginBottom: 10,
   },
   title3: {
     fontSize: 20,
     fontWeight: "600",
-    color:"#a69f9f",
+    color: "#a69f9f",
     marginBottom: 20,
   },
   price: {
     fontSize: 18,
-    padding:4,
+    padding: 4,
     color: "#000",
     marginBottom: 7,
-    fontWeight:"900"
+    fontWeight: "900",
   },
   description: {
     fontSize: 16,
     marginBottom: 10,
-    fontWeight:"700",
+    fontWeight: "700",
     lineHeight: 40,
   },
   address: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginHorizontal: 10,
     marginTop: 20,
-    padding: 20, // Increased padding for better spacing
+    padding: 20,
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {
