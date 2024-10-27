@@ -37,14 +37,13 @@ const BlogPage = () => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <CarouselComponent />
       <FlatList
         data={dummy}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={styles.listContainer}
+        ListHeaderComponent={<CarouselComponent />} // Set Carousel as header
       />
-
       <CommentComponent />
     </GestureHandlerRootView>
   );
@@ -52,6 +51,9 @@ const BlogPage = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  listContainer: {
     padding: 10,
     paddingBottom: 100,
   },
