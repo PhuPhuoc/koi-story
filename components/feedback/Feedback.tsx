@@ -5,14 +5,13 @@ import {
   StyleSheet,
   FlatList,
   Pressable,
-  Button,
+  Image,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import feedbackData from "../../dummy_data/dummny_feedback.json";
-import { ScrollView } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
-import CommentComponent from "../comment_modal/comment";
+import CommentMarket from "../comment_modal/comment_market";
 
 interface Feedback {
   id: number;
@@ -20,6 +19,7 @@ interface Feedback {
   time: string;
   rating: number;
   comment: string;
+  avatar: string;
 }
 
 const FeedbackComponent: React.FC = () => {
@@ -48,8 +48,11 @@ const FeedbackComponent: React.FC = () => {
   const renderFeedbackItem = ({ item }: { item: Feedback }) => (
     <View style={styles.feedbackItem}>
       <View style={styles.nameAndTimeContainer}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.time}>{item.time}</Text>
+        <Image source={{ uri: item.avatar }} style={styles.avatar} />
+        <View style={styles.nameContainer}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.time}>{item.time}</Text>
+        </View>
       </View>
 
       <Text style={styles.ratingContainer}>
@@ -87,6 +90,7 @@ const FeedbackComponent: React.FC = () => {
         time: new Date().toLocaleString(),
         rating: selectedRating !== null ? selectedRating : 0,
         comment: newComment.trim(),
+        avatar: "https://i.pravatar.cc/150?img=1",
       };
 
       setFeedbackList((prev) => [...prev, newFeedback]);
@@ -145,10 +149,12 @@ const FeedbackComponent: React.FC = () => {
           onPress={() => setSelectedRating(null)}
           style={styles.clearFilterButton}
         />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {[5, 4, 3, 2, 1].map((rating) => (
+        <FlatList
+          data={[5, 4, 3, 2, 1]}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item: rating }) => (
             <TouchableOpacity
-              key={rating}
               onPress={() => setSelectedRating(rating)}
               style={[
                 styles.filterButton,
@@ -157,8 +163,9 @@ const FeedbackComponent: React.FC = () => {
             >
               <Text style={styles.filterButtonText}>{rating} Stars</Text>
             </TouchableOpacity>
-          ))}
-        </ScrollView>
+          )}
+          keyExtractor={(item) => item.toString()}
+        />
       </View>
 
       <FlatList
@@ -168,12 +175,15 @@ const FeedbackComponent: React.FC = () => {
       />
 
       <View style={styles.containerButtonModal}>
-        <Pressable style={styles.buttonModal} onPress={() => setModalVisible(true)}>
+        <Pressable
+          style={styles.buttonModal}
+          onPress={() => setModalVisible(true)}
+        >
           <Text style={styles.buttonTextModal}>Xem tất cả bình luận</Text>
         </Pressable>
       </View>
 
-      <CommentComponent
+      <CommentMarket
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         feedbackList={feedbackList}
@@ -223,6 +233,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 5,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  nameContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
   name: {
     fontSize: 16,
@@ -274,16 +294,16 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   containerButtonModal: {
-    alignItems: "center", 
+    alignItems: "center",
     marginVertical: 10,
   },
   buttonModal: {
-    backgroundColor: "#007BFF", 
+    backgroundColor: "#007BFF",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5, 
+    borderRadius: 5,
     elevation: 2,
-    shadowColor: "#000", 
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -292,9 +312,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2.5,
   },
   buttonTextModal: {
-    color: "white", 
-    fontSize: 16, 
-    fontWeight: "bold", 
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

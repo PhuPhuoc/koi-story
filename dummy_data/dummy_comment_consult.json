@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "User 1",
+    "time": "1 giờ trước",
+    "comment": "Bài viết rất hay!",
+    "avatar": "https://i.pravatar.cc/150?img=1"
+  },
+  {
+    "id": 2,
+    "name": "User 2",
+    "time": "2 giờ trước",
+    "comment": "Cảm ơn tác giả!",
+    "avatar": "https://i.pravatar.cc/150?img=1"
+  }
+]

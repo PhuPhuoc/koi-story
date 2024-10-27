@@ -14,11 +14,8 @@ import DUMMY_DATA from "../../../dummy_data/dummy_market_detail.json";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import CommentComponent from "../../../components/comment_modal/comment";
-import dummyFeedback from "../../../dummy_data/dummny_feedback.json";
 import Feedback from "../../../components/feedback/Feedback";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
