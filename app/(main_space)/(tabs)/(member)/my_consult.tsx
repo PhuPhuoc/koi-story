@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet, Modal } from "react-native";
 import AddConsult from "../../../../components/my_consult/AddConsultModal";
+import { THEME_COLOR } from "../../../../constants/const";
 
 const MyConsultPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -43,8 +44,8 @@ const styles = StyleSheet.create({
   floatingButton: {
     position: "absolute",
     right: 20,
-    top: 20,
-    backgroundColor: "#9BB0C1",
+    bottom: 100,
+    backgroundColor: THEME_COLOR,
     width: 60,
     height: 60,
     borderRadius: 30,

@@ -1,7 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import dataUserFengShui from "../../dummy_data/dummy_user_feng_shui.json";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { THEME_COLOR } from "../../constants/const";
 
 interface Koi {
   koi_id: number;
@@ -119,7 +127,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   button: {
-    backgroundColor: "#00bbff",
+    backgroundColor: THEME_COLOR,
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,

@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { THEME_COLOR } from "../../constants/const";
 
 const AddConsult = ({ closeModal }: any) => {
   const [title, setTitle] = useState("");
@@ -84,6 +85,7 @@ const AddConsult = ({ closeModal }: any) => {
         value={description}
         onChangeText={setDescription}
         multiline
+        numberOfLines={4}
         onFocus={() => setDescriptionFocused(true)}
         onBlur={() => setDescriptionFocused(false)}
       />
@@ -169,7 +171,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 10,
   },
-  // Thêm style cho container của ảnh
   imageContainer: {
     position: "relative",
     marginRight: 10,
@@ -215,10 +216,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   submitButton: {
-    backgroundColor: "#3AA6B9",
+    backgroundColor: THEME_COLOR,
   },
   cancelButton: {
-    backgroundColor: "#f44336",
+    backgroundColor: "#999",
   },
   buttonText: {
     color: "#fff",
