@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "username": "Nguyen Van A",
+    "content": "Đây là bình luận 1",
+    "time": "11h",
+    "avatar": "https://cdn-icons-png.flaticon.com/512/6858/6858504.png"
+  },
+  {
+    "id": "2",
+    "username": "Nguyen Van b",
+    "content": "Hay quá 💚💜🔥",
+    "time": "12h",
+    "avatar": "https://cdn-icons-png.flaticon.com/512/6858/6858504.png"
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Nhân Tâm",
+    "avatar": "https://i.pravatar.cc/150?img=1",
+    "created_at": "8/18/2021",
+    "post_type": "Tư vấn",
+    "title": "Cá Koi phù hợp cho năm 2025",
+    "question": "Năm 2025 nên nuôi cá Koi loại gì cho may mắn?",
+    "image_url": "https://img.freepik.com/premium-vector/koi-fish-illustration-japanese-carp-colorful-oriental-koi-asia-set-chinese-goldfish-traditional-fishery-isolated-background_177886-210.jpg",
+    "content": "Người tuổi Sửu sinh vào những năm: 1949 (Kỷ Sửu), 1961 (Tân Sửu)..."
+  },
+  {
+    "id": 2,
+    "name": "Nhân Tâm",
+    "avatar": "https://i.pravatar.cc/150?img=1",
+    "created_at": "8/18/2021",
+    "post_type": "Tư vấn",
+    "title": "Cá Koi phù hợp cho năm 2025",
+    "question": "Năm 2025 nên nuôi cá Koi loại gì cho may mắn?",
+    "image_url": "https://img.freepik.com/premium-vector/koi-fish-illustration-japanese-carp-colorful-oriental-koi-asia-set-chinese-goldfish-traditional-fishery-isolated-background_177886-210.jpg",
+    "content": "Người tuổi Sửu sinh vào những năm: 1949 (Kỷ Sửu), 1961 (Tân Sửu)..."
+  }
+]
