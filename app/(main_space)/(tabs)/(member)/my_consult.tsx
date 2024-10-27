@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet, Modal } from "react-native";
 import AddConsult from "../../../../components/my_consult/AddConsultModal";
 import { THEME_COLOR } from "../../../../constants/const";
+import ConsultPost from "../../../../components/post_consult_v2/consult_card";
 
 const MyConsultPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -15,6 +16,10 @@ const MyConsultPage = () => {
   };
   return (
     <View style={styles.container}>
+      
+      <View style={styles.container}>
+      <ConsultPost />
+    </View>
       <TouchableOpacity style={styles.floatingButton} onPress={openModal}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
@@ -38,8 +43,7 @@ const MyConsultPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    
   },
   floatingButton: {
     position: "absolute",

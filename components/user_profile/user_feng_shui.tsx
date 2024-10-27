@@ -88,7 +88,7 @@ const UserFengShui: React.FC<UserFengShuiProps> = ({ openModal }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.subTitle}>Cá koi hợp mệnh đề xuất:</Text>
+        <Text style={styles.subTitle}>Đề xuất cá Koi hợp mệnh:</Text>
         <TouchableOpacity style={styles.button} onPress={openModal}>
           <Text style={styles.buttonText}>Tính mệnh</Text>
         </TouchableOpacity>
@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     margin: 10,
     elevation: 10,
     borderRadius: 25,
-    borderWidth: 2,
     borderColor: "black",
   },
   header: {

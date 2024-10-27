@@ -30,7 +30,9 @@ const ConsultCard = ({ consult }: { consult: Consult }) => {
         </View>
       </View>
 
-      <Text style={styles.topic}>Chủ đề: {consult.post_type}</Text>
+      <Text style={styles.topicContainer}>
+        <Text style={styles.topicText}>Chủ đề: {consult.post_type}</Text>
+      </Text>
 
       <Text style={styles.title}>{consult.title}</Text>
 
@@ -53,6 +55,7 @@ const ConsultPost = () => {
   return (
     <FlatList
       data={ConsultData}
+      showsVerticalScrollIndicator={false}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -107,11 +110,18 @@ const styles = StyleSheet.create({
     color: "#888",
     marginBottom: 5,
   },
-
-  topic: {
-    color: "#4A90E2",
+  topicContainer: {
+    backgroundColor: "#E0F7FA", 
+    borderRadius: 20, 
+    paddingVertical: 5, 
+    paddingHorizontal: 10, 
+    marginBottom: 8, 
+    alignSelf: 'flex-start', 
+  },
+  topicText: {
+    color: "#00796B",
     fontSize: 14,
-    marginBottom: 8,
+    fontWeight: "bold", 
   },
   title: {
     color: "#333",

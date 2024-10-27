@@ -124,7 +124,7 @@ const UserProfileScreen = () => {
               <Text style={styles.name}>{display_name}</Text>
               <Text style={styles.userType}>{user_type}</Text>
               <View style={styles.row}>
-                <View style={[styles.ageChip, { backgroundColor: "#B0BEC5" }]}>
+                <View style={[styles.ageChip, { backgroundColor: "#00E5EE" }]}>
                   <Text style={styles.ageText}>Sinh năm: {year_of_birth}</Text>
                 </View>
                 <View
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   ageText: {
-    color: "#333",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "800",
   },

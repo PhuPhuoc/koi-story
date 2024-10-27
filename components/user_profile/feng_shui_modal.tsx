@@ -64,17 +64,19 @@ const FengShuiModal: React.FC<FengShuiModalProps> = ({
               ))}
             </ScrollView>
           </View>
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={styles.pressableButton}
+              style={[styles.pressableButton, styles.button]}
               onPress={handleSave}
             >
               <Text style={styles.buttonText}>Tính</Text>
             </TouchableOpacity>
-          </View>
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+            <TouchableOpacity
+              style={[styles.cancelButton, styles.button]}
+              onPress={onClose}
+            >
               <Text style={styles.buttonText}>Hủy</Text>
             </TouchableOpacity>
           </View>
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   subtitle: {
     fontSize: 16,
@@ -111,10 +113,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   scrollContainer: {
-    borderRadius: 15,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "#000",
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   scrollView: {
     maxHeight: 200,
@@ -144,10 +145,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginVertical: 10,
   },
+  button: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
   pressableButton: {
-    backgroundColor: "#8EACCD",
+    backgroundColor: "#00E5EE",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -161,6 +168,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
+    fontWeight: "bold"
   },
 });
 
