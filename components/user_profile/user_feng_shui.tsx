@@ -1,6 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList} from 'react-native';
-import dataUserFengShui from '../../dummy_data/dummy_user_feng_shui.json';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import dataUserFengShui from "../../dummy_data/dummy_user_feng_shui.json";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { THEME_COLOR } from "../../constants/const";
 
 interface Koi {
   koi_id: number;
@@ -8,39 +17,90 @@ interface Koi {
   color: string;
   size: string;
   old: string;
+  image: string;
 }
 
 interface FengShui {
-  year_of_birth: number;
-  feng_shui: string;
   recommended_koi: Koi[];
 }
 
-const UserFengShui = () => {
-  const { year_of_birth, feng_shui, recommended_koi } = dataUserFengShui as FengShui;
+interface UserFengShuiProps {
+  openModal: () => void;
+}
+
+const UserFengShui: React.FC<UserFengShuiProps> = ({ openModal }) => {
+  const { recommended_koi } = dataUserFengShui as FengShui;
+
+  const formatAge = (age: string) => {
+    if (age.toLowerCase().includes("month")) {
+      return `${age.split(" ")[0]} M`;
+    } else if (age.toLowerCase().includes("year")) {
+      return `${age.split(" ")[0]} Y`;
+    } else if (age.toLowerCase().includes("days")) {
+      return `${age.split(" ")[0]} D`;
+    }
+    return age;
+  };
+
+  const renderKoiInfo = (koi: Koi) => (
+    <View style={styles.koiInfoContainer}>
+      <Image
+        source={{
+          uri: koi.image,
+        }}
+        resizeMode="cover"
+        style={styles.image}
+      />
+      <View style={styles.infoRow}>
+        <MaterialCommunityIcons name="palette" size={18} color="#666" />
+        <Text style={styles.infoLabel}>Color:</Text>
+        <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode="tail">
+          {koi.color}
+        </Text>
+      </View>
+
+      <View style={styles.infoRow}>
+        <MaterialCommunityIcons name="ruler" size={18} color="#666" />
+        <Text style={styles.infoLabel}>Size:</Text>
+        <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode="tail">
+          {koi.size}
+        </Text>
+      </View>
+
+      <View style={styles.infoRow}>
+        <MaterialCommunityIcons name="fish" size={18} color="#666" />
+        <Text style={styles.infoLabel}>Type:</Text>
+        <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode="tail">
+          {koi.type}
+        </Text>
+      </View>
+
+      <View style={styles.infoRow}>
+        <MaterialCommunityIcons name="calendar" size={18} color="#666" />
+        <Text style={styles.infoLabel}>Old:</Text>
+        <Text style={styles.infoValue} numberOfLines={1} ellipsizeMode="tail">
+          {formatAge(koi.old)}
+        </Text>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>User Feng Shui</Text>
-
-      <Text style={styles.text}>Year of Birth: {year_of_birth}</Text>
-      <Text style={styles.text}>Feng Shui Element: {feng_shui}</Text>
-
-      {/* Koi List*/}
-      <Text style={styles.subTitle}>Recommended Koi:</Text>
+      <View style={styles.header}>
+        <Text style={styles.subTitle}>Đề xuất cá Koi hợp mệnh:</Text>
+        <TouchableOpacity style={styles.button} onPress={openModal}>
+          <Text style={styles.buttonText}>Tính mệnh</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={recommended_koi}
         keyExtractor={(item) => item.koi_id.toString()}
+        numColumns={2}
         renderItem={({ item }) => (
-          <View style={styles.koiContainer}>
-            <Text style={styles.text}>Type: {item.type}</Text>
-            <Text style={styles.text}>Color: {item.color}</Text>
-            <Text style={styles.text}>Size: {item.size}</Text>
-            <Text style={styles.text}>Old: {item.old}</Text>
-          </View>
+          <View style={styles.koiContainer}>{renderKoiInfo(item)}</View>
         )}
       />
-
     </View>
   );
 };
@@ -48,36 +108,71 @@ const UserFengShui = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 30,
+    padding: 20,
+    backgroundColor: "white",
+    margin: 10,
+    elevation: 10,
+    borderRadius: 25,
+    borderColor: "black",
   },
-  title: {
-    fontSize: 22, 
-    fontWeight: 'bold', 
-    marginBottom: 20,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
   subTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: "bold",
   },
-  text: {
+  button: {
+    backgroundColor: THEME_COLOR,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "#FFF",
     fontSize: 16,
-    color: '#333',
-    marginBottom: 5,
+    fontWeight: "bold",
   },
   koiContainer: {
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    marginBottom: 10,
-    width: '100%',
-    shadowColor: '#000',
+    flex: 1,
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    margin: 5,
+    maxWidth: "48%",
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 2,
+    elevation: 5,
+  },
+  image: {
+    height: 100,
+    width: "100%",
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  koiInfoContainer: {
+    paddingHorizontal: 4,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  infoLabel: {
+    fontSize: 16,
+    color: "#666",
+    marginLeft: 4,
+    width: 60,
+  },
+  infoValue: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "600",
+    flex: 1,
   },
 });
 

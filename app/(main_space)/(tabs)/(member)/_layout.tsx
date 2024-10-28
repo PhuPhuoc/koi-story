@@ -1,6 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MyBlogPage from './my_blog';
 import MyConsultPage from './my_consult';
+import RecommendPage from './recommend';
 
 const TopTabs = createMaterialTopTabNavigator();
 export default function MemberLayout() {
@@ -8,7 +9,7 @@ export default function MemberLayout() {
         <TopTabs.Navigator>
             <TopTabs.Screen
                 name="recommend"
-                component={MyBlogPage}
+                component={RecommendPage}
                 options={{ title: 'Recommend' }}
             />
             <TopTabs.Screen

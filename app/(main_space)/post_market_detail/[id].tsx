@@ -7,7 +7,6 @@ import {
   FlatList,
   TouchableOpacity,
   Linking,
-  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { Stack, useRouter } from "expo-router";
@@ -15,7 +14,10 @@ import DUMMY_DATA from "../../../dummy_data/dummy_market_detail.json";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Feedback from "../../../components/feedback/Feedback";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const PostMarketDetail = () => {
   const [selectedImage, setSelectedImage] = useState<string>(
@@ -23,6 +25,15 @@ const PostMarketDetail = () => {
   );
   const [liked, setLiked] = useState<boolean>(false);
   const route = useRouter();
+  const [showAddressTooltip, setShowAddressTooltip] = useState(false);
+
+  const handlePressIn = () => {
+    setShowAddressTooltip(true);
+  };
+
+  const handlePressOut = () => {
+    setShowAddressTooltip(false);
+  };
 
   const handleImagePress = (image: string) => {
     setSelectedImage(image);
@@ -35,6 +46,7 @@ const PostMarketDetail = () => {
   const renderKoiInfo = () => (
     <View style={styles.koiInfoContainer}>
       <View style={styles.infoRow}>
+        <Text style={styles.title3}>Thông tin chi tiết </Text>
         <View style={styles.infoItem}>
           <MaterialCommunityIcons name="palette" size={24} color="#666" />
           <Text style={styles.infoLabel}>Màu sắc:</Text>
@@ -156,22 +168,58 @@ const PostMarketDetail = () => {
         />
 
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{DUMMY_DATA.product_name}</Text>
-          <View style={styles.typeChip}>
-            <Text style={styles.typeText}>{DUMMY_DATA.product_type}</Text>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <View style={styles.typeChip}>
+              <FontAwesome5 name="fish" size={20} color="white" />
+              <Text style={styles.typeText}>{DUMMY_DATA.product_type}</Text>
+            </View>
+            <Text style={styles.price}>
+              {DUMMY_DATA.price.toLocaleString()} VND
+            </Text>
           </View>
-          <Text style={styles.price}>
-            {DUMMY_DATA.price.toLocaleString()} VND
-          </Text>
+          <Text style={styles.title}>{DUMMY_DATA.product_name}</Text>
+
+          <Text style={styles.title2}>Giới thiệu</Text>
           <Text style={styles.description}>{DUMMY_DATA.describe}</Text>
-          <Text style={styles.address}>
-            Address: {DUMMY_DATA.seller_address}
-          </Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handlePhonePress}>
-              <Feather name="phone-call" size={20} color="white" />
-              <Text style={styles.buttonText}>Gọi điện</Text>
-            </TouchableOpacity>
+
+          <View
+            style={{
+              flexDirection: "row",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handlePhonePress}
+              >
+                <Feather name="phone-call" size={20} color="#FFFFFF" />
+                <Text style={styles.buttonText}>GỌI ĐIỆN</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.addressContainer}>
+              <TouchableOpacity
+                style={styles.circularIconBackground}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+              >
+                <FontAwesome name="map-marker" size={32} color="white" />
+              </TouchableOpacity>
+              {showAddressTooltip && (
+                <View style={styles.tooltip}>
+                  <Text style={styles.tooltipText}>
+                    {DUMMY_DATA.seller_address}
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
         </View>
 
@@ -179,12 +227,16 @@ const PostMarketDetail = () => {
           ? renderKoiInfo()
           : renderOtherInfo()}
 
-        <View style={styles.fishContainer}>
+        <GestureHandlerRootView style={styles.container}>
+          <Feedback />
+        </GestureHandlerRootView>
+
+        {/* <View style={styles.fishContainer}>
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
           <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
@@ -194,6 +246,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  addressContainer: {
+    width: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  addressLabel: {
+    fontSize: 16,
+    marginRight: 8,
+  },
+  circularIconBackground: {
+    backgroundColor: "red",
+    borderRadius: 20,
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  tooltip: {
+    position: "absolute",
+    top: -40, 
+    left: -120, 
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    paddingVertical: 6,
+    paddingHorizontal: 10, 
+    borderRadius: 5,
+    zIndex: 10,
+    width: 150,
+  },
+  tooltipText: {
+    color: "#fff",
+    fontSize: 14,
+    textAlign: "left", 
   },
   backButton: {
     position: "absolute",
@@ -226,10 +313,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderRadius: 10,
     overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "black",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
   },
   selectedThumbnailContainer: {
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: "#6499E9",
     backgroundColor: "rgba(0, 0, 0, 0.1)",
   },
   thumbnail: {
@@ -238,41 +328,58 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   infoContainer: {
+    gap: 3,
     padding: 20,
     marginTop: 20,
     backgroundColor: "white",
-    marginHorizontal: 10,
-    borderRadius: 25,
+    borderRadius: 15,
     shadowColor: "#000",
-    elevation: 5,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "500",
     marginBottom: 10,
+    fontStyle: "italic",
+  },
+  title2: {
+    marginTop: 20,
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#a69f9f",
+    marginBottom: 10,
+  },
+  title3: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#a69f9f",
+    marginBottom: 20,
   },
   price: {
     fontSize: 18,
-    color: "red",
-    marginBottom: 5,
+    padding: 4,
+    color: "#000",
+    marginBottom: 7,
+    fontWeight: "900",
   },
   description: {
     fontSize: 16,
     marginBottom: 10,
-    color: "#a69f9f",
+    fontWeight: "700",
+    lineHeight: 40,
   },
   address: {
     fontSize: 16,
     marginBottom: 5,
   },
   buttonContainer: {
+    width: "90%",
     flexDirection: "row",
     justifyContent: "space-between",
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#89CFF0",
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 15,
     flex: 1,
     marginRight: 10,
     flexDirection: "row",
@@ -280,7 +387,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonText: {
-    color: "white",
+    color: "#FFFFFF",
     fontWeight: "bold",
     marginLeft: 8,
     fontSize: 16,
@@ -290,17 +397,19 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   typeChip: {
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#F95454",
     borderRadius: 16,
     paddingVertical: 6,
     paddingHorizontal: 12,
     alignSelf: "flex-start",
     marginBottom: 10,
+    flexDirection: "row",
   },
   typeText: {
-    color: "#333",
+    color: "#FFF",
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "800",
+    marginLeft: 7,
   },
   nguHanhContainer: {
     marginTop: 30,
@@ -339,8 +448,8 @@ const styles = StyleSheet.create({
   koiInfoContainer: {
     backgroundColor: "white",
     marginHorizontal: 10,
-    marginTop: 20,
-    padding: 20, // Increased padding for better spacing
+    marginBottom: 10,
+    padding: 20, 
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {
@@ -352,10 +461,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   infoRow: {
-    marginBottom: 16, // Even spacing between rows
+    marginBottom: 16, 
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0", // Light border for visual separation
-    paddingBottom: 16, // Padding at bottom of each row
+    borderBottomColor: "#f0f0f0", 
+    paddingBottom: 16,
   },
   infoItem: {
     flexDirection: "row",
