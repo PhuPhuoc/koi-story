@@ -55,7 +55,7 @@ export default function CreateProductForm() {
       />
 
       <TouchableOpacity style={styles.floatingButton} onPress={openModal}>
-        <Text>+</Text>
+        <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
 
       <Modal
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContentContainer: {
-    paddingBottom: 100, // To ensure the last item is visible above the floating button
+    paddingBottom: 100,
   },
   title: {
     fontSize: 24,
@@ -137,15 +137,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   floatingButton: {
-    backgroundColor: THEME_COLOR,
-    width: 50,
-    height: 50,
-    borderRadius: 30,
     position: "absolute",
-    bottom: 120,
     right: 20,
+    bottom: 100,
+    backgroundColor: THEME_COLOR,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   floatingButtonText: {
     color: "#fff",
@@ -196,5 +201,10 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: "#666",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 40,
+    fontWeight: "bold",
   },
 });
