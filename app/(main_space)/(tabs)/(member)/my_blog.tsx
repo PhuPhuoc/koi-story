@@ -1,114 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
-} from 'react-native';
-import { THEME_COLOR } from '../../../../constants/const';
+  FlatList,
+  Image,
+  Modal,
+} from "react-native";
+import { THEME_COLOR } from "../../../../constants/const";
+import dummy from "../../../../dummy_data/dummy_blog.json";
+import AddMyMarket from "../../../../components/my_market/AddMyMarketModal";
 
 export default function CreateProductForm() {
-  const [form, setForm] = useState({
-    product_name: '',
-    price: '',
-    seller_address: '',
-    phone_number: '',
-    description: '',
-    product_type: '',
-  });
-
-  const [isFormVisible, setIsFormVisible] = useState(false);
-
-  const handleChange = (name: string, value: string) => {
-    setForm({ ...form, [name]: value });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const openModal = () => {
+    setIsModalVisible(true);
   };
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', form);
-    // Add form submission logic here
+  const closeModal = () => {
+    setIsModalVisible(false);
   };
-
-  const showForm = () => {
-    setIsFormVisible(true);
-  };
-
-  const closeForm = () => {
-    setIsFormVisible(false);
-  };
+  const renderItem = ({
+    item,
+  }: {
+    item: {
+      id: number;
+      title: string;
+      author: string;
+      content: string;
+      image: string;
+    };
+  }) => (
+    <TouchableOpacity style={styles.card} onPress={() => console.log()}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={styles.textContainer}>
+        <Text style={styles.artName}>{item.title}</Text>
+        <Text>{item.author}</Text>
+        <Text style={styles.description} numberOfLines={2}>
+          {item.content}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-      {isFormVisible ? (
-        <ScrollView contentContainerStyle={styles.formContainer}>
-          <Text style={styles.title}>Create a Product</Text>
+      <FlatList
+        data={dummy}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.listContentContainer}
+      />
 
-          <Text style={styles.label}>Product Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter product name"
-            value={form.product_name}
-            onChangeText={(text) => handleChange('product_name', text)}
-          />
+      <TouchableOpacity style={styles.floatingButton} onPress={openModal}>
+        <Text>+</Text>
+      </TouchableOpacity>
 
-          <Text style={styles.label}>Price</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter price"
-            value={form.price}
-            keyboardType="numeric"
-            onChangeText={(text) => handleChange('price', text)}
-          />
-
-          <Text style={styles.label}>Seller Address</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter seller address"
-            value={form.seller_address}
-            onChangeText={(text) => handleChange('seller_address', text)}
-          />
-
-          <Text style={styles.label}>Phone Number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter phone number"
-            value={form.phone_number}
-            keyboardType="phone-pad"
-            onChangeText={(text) => handleChange('phone_number', text)}
-          />
-
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Enter product description"
-            value={form.description}
-            multiline
-            numberOfLines={4}
-            onChangeText={(text) => handleChange('description', text)}
-          />
-
-          <Text style={styles.label}>Product Type</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter product type"
-            value={form.product_type}
-            onChangeText={(text) => handleChange('product_type', text)}
-          />
-
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Submit</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.closeButton} onPress={closeForm}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      ) : (
-        <TouchableOpacity style={styles.floatingButton} onPress={showForm}>
-          <Text style={styles.floatingButtonText}>+</Text>
-        </TouchableOpacity>
-      )}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <AddMyMarket closeModal={() => setIsModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -116,82 +77,124 @@ export default function CreateProductForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    position: 'relative',
   },
-  formContainer: {
-    flexGrow: 1,
-    padding: 20,
+  listContentContainer: {
+    paddingBottom: 100, // To ensure the last item is visible above the floating button
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
-    color: '#333',
+    color: "#333",
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
-    color: '#333',
+    color: "#333",
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 8,
     marginBottom: 15,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
   },
   textArea: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 8,
     marginBottom: 15,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   submitButton: {
     backgroundColor: THEME_COLOR,
     padding: 10,
     borderRadius: 99,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   submitButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   closeButton: {
-    backgroundColor: '#999',
+    backgroundColor: "#999",
     padding: 10,
     borderRadius: 99,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
     marginBottom: 100,
   },
   closeButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   floatingButton: {
     backgroundColor: THEME_COLOR,
     width: 50,
     height: 50,
     borderRadius: 30,
-    position: 'absolute',
+    position: "absolute",
     bottom: 120,
     right: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   floatingButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: 370,
+    height: 700,
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  image: {
+    width: "100%",
+    height: 150,
+    borderRadius: 8,
+  },
+  textContainer: {
+    marginTop: 10,
+  },
+  artName: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  price: {
+    fontSize: 16,
+    color: "#888",
+    marginVertical: 5,
+  },
+  description: {
+    fontSize: 14,
+    color: "#666",
   },
 });
