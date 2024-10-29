@@ -8,12 +8,12 @@ import {
   Image,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import feedbackData from "../../dummy_data/dummny_feedback.json";
+import feedbackData from "../../dummy_data/dummny_feedback_market.json";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
-import CommentMarket from "../comment_modal/comment_market";
+import CommentMarket from "../modal_comment/modal_comment_market";
 
-interface Feedback {
+interface FeedbackMarket {
   id: number;
   name: string;
   time: string;
@@ -22,11 +22,11 @@ interface Feedback {
   avatar: string;
 }
 
-const FeedbackComponent: React.FC = () => {
+const FeedbackMarket: React.FC = () => {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [newComment, setNewComment] = useState("");
-  const [feedbackList, setFeedbackList] = useState<Feedback[]>(feedbackData);
+  const [feedbackList, setFeedbackList] = useState<FeedbackMarket[]>(feedbackData);
 
   const averageRating = useMemo(() => {
     const ratings = feedbackList.map((item) => item.rating);
@@ -45,7 +45,7 @@ const FeedbackComponent: React.FC = () => {
 
   const limitedFeedback = filteredFeedbackData.slice(0, 3);
 
-  const renderFeedbackItem = ({ item }: { item: Feedback }) => (
+  const renderFeedbackItem = ({ item }: { item: FeedbackMarket }) => (
     <View style={styles.feedbackItem}>
       <View style={styles.nameAndTimeContainer}>
         <Image source={{ uri: item.avatar }} style={styles.avatar} />
@@ -84,7 +84,7 @@ const FeedbackComponent: React.FC = () => {
           ? Math.max(...feedbackList.map((item) => item.id)) + 1
           : 1;
 
-      const newFeedback: Feedback = {
+      const newFeedback: FeedbackMarket = {
         id: newId,
         name: "New User",
         time: new Date().toLocaleString(),
@@ -318,4 +318,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FeedbackComponent;
+export default FeedbackMarket;

@@ -7,14 +7,14 @@ import {
   TextInput,
   Pressable,
   StyleSheet,
-  Image,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-interface Comment {
+interface FeedbackMarket {
   id: number;
   name: string;
   time: string;
+  rating: number;
   comment: string;
   avatar: string;
 }
@@ -22,36 +22,24 @@ interface Comment {
 interface CommentModalProps {
   visible: boolean;
   onClose: () => void;
-  commentList: Comment[];
+  feedbackList: FeedbackMarket[];
+  renderFeedbackItem: (item: { item: FeedbackMarket }) => JSX.Element;
+  renderStarRating: () => JSX.Element;
   newComment: string;
   setNewComment: (comment: string) => void;
   handleAddComment: () => void;
 }
 
-const CommentConsult: React.FC<CommentModalProps> = ({
+const CommentMarket: React.FC<CommentModalProps> = ({
   visible,
   onClose,
-  commentList,
+  feedbackList,
+  renderFeedbackItem,
+  renderStarRating,
   newComment,
   setNewComment,
   handleAddComment,
 }) => {
-  const renderCommentItem = ({ item }: { item: Comment }) => (
-    <View style={styles.commentItem}>
-      <View style={styles.nameAndTimeContainer}>
-        <Image source={{ uri: item.avatar }} style={styles.avatar} />
-        <View style={styles.nameContainer}>
-          {/* Thêm View này để chứa tên và thời gian */}
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.time}>{item.time}</Text>
-        </View>
-      </View>
-      
-        <Text style={styles.comment}>{item.comment}</Text>
-     
-    </View>
-  );
-
   return (
     <Modal visible={visible} animationType="slide">
       <View style={styles.modalContainer}>
@@ -66,11 +54,13 @@ const CommentConsult: React.FC<CommentModalProps> = ({
         </View>
 
         <FlatList
-          data={commentList}
-          renderItem={renderCommentItem}
+          data={feedbackList}
+          renderItem={renderFeedbackItem}
           keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
         />
+
+        {renderStarRating()}
 
         <View style={styles.inputContainer}>
           <TextInput
@@ -107,42 +97,10 @@ const styles = StyleSheet.create({
   closeIcon: {
     padding: 10,
   },
-  commentItem: {
-    marginBottom: 15,
-  },
-  nameAndTimeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    // marginBottom: 5,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  nameContainer: {
-    flex: 1,
-    flexDirection: "column",
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  time: {
-    fontSize: 14,
-    color: "#888",
-    marginBottom: 5,
-  },
-
-  comment: {
-    fontSize: 16,
-    color: "#333",
-  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginVertical: 10,
   },
   input: {
     flex: 1,
@@ -157,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommentConsult;
+export default CommentMarket;

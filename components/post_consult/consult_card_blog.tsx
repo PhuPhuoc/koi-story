@@ -16,30 +16,37 @@ type Consult = {
   title: string;
   question: string;
   content: string;
-  image_url: string;
+  image_url: string[];
 };
 
 const ConsultCard = ({ consult }: { consult: Consult }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.nameAndTimeContainer}>
-        <Image source={{ uri: consult.avatar }} style={styles.avatar} />
-        <View style={styles.nameContainer}>
-          <Text style={styles.name}>{consult.name}</Text>
-          <Text style={styles.time}>{consult.created_at}</Text>
-        </View>
-      </View>
-
-      <Text style={styles.topicContainer}>
-        <Text style={styles.topicText}>Chủ đề: {consult.post_type}</Text>
-      </Text>
-
+      <View style={styles.header}>
+            <Image source={{ uri: consult.avatar }} style={styles.avatar} />
+            <View style={styles.infoContainer}>
+              <View style={styles.nameTopicContainer}>
+                <Text style={styles.name}>{consult.name}</Text>
+                <Text style={styles.topicContainer}>
+                  <Text style={styles.topicText}>
+                    Chủ đề: {consult.post_type}
+                  </Text>
+                </Text>
+              </View>
+              <Text style={styles.date}>Ngày: {consult.created_at}</Text>
+            </View>
+          </View>
       <Text style={styles.title}>{consult.title}</Text>
 
       <Text style={styles.question}>{consult.question}</Text>
 
-      {consult.image_url && (
-        <Image source={{ uri: consult.image_url }} style={styles.postImage} />
+      {consult.image_url && consult.image_url.length > 0 ? (
+        <Image source={{ uri: consult.image_url[0] }} style={styles.postImage} />
+      ) : (
+        <Image
+          source={require("../../assets/placeholder.jpg")} 
+          style={styles.postImage}
+        />
       )}
 
       <Text style={styles.content} numberOfLines={2}>
@@ -49,7 +56,7 @@ const ConsultCard = ({ consult }: { consult: Consult }) => {
   );
 };
 
-const ConsultPost = () => {
+const ConsultPostBlog = () => {
   const router = useRouter();
 
   return (
@@ -85,43 +92,44 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  nameAndTimeContainer: {
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 12,
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  nameTopicContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 5,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  nameContainer: {
-    flex: 1,
-    justifyContent: "center",
   },
   name: {
-    fontSize: 16,
     fontWeight: "bold",
-  },
-  time: {
-    fontSize: 14,
-    color: "#888",
-    marginBottom: 5,
+    fontSize: 16,
+    marginRight: 8,
   },
   topicContainer: {
     backgroundColor: "#E0F7FA", 
     borderRadius: 20, 
     paddingVertical: 5, 
     paddingHorizontal: 10, 
-    marginBottom: 8, 
-    alignSelf: 'flex-start', 
   },
   topicText: {
     color: "#00796B",
     fontSize: 14,
     fontWeight: "bold", 
+  },
+  date: {
+    color: "#888",
+    fontSize: 14,
   },
   title: {
     color: "#333",
@@ -147,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConsultPost;
+export default ConsultPostBlog;

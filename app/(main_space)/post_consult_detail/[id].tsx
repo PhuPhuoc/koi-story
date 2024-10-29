@@ -11,7 +11,8 @@ import {
 import ConsultData from "../../../dummy_data/dummy_post_consult.json";
 import CommentData from "../../../dummy_data/dummy_comment_consult.json";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import CommentConsult from "../../../components/comment_modal/comment_consult";
+import ImageModal from "../../../components/image_modal/image_modal";
+import FeedbackConsult from "../../../components/feedback/feedback_consult";
 
 interface Comment {
   id: number;
@@ -30,6 +31,9 @@ const DetailConsult = () => {
   const [newComment, setNewComment] = useState("");
   const [commentList, setCommentList] = useState<Comment[]>(CommentData);
 
+  const [isImageModalVisible, setImageModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
   useLayoutEffect(() => {
     if (consult) {
       navigation.setOptions({ title: consult.title });
@@ -47,47 +51,60 @@ const DetailConsult = () => {
           name: "Current User",
           time: "Just now",
           comment: newComment,
-          avatar: "https://example.com/avatar.jpg"
+          avatar: "https://i.pravatar.cc/150?img=1",
         },
       ]);
       setNewComment("");
     }
   };
 
+  const openImageModal = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    setImageModalVisible(true);
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.containerAll}>
-        <View style={styles.header}>
-          <Image source={{ uri: consult.avatar }} style={styles.avatar} />
-          <View style={styles.infoContainer}>
-            <Text style={styles.name}>{consult.name}</Text>
-            <Text style={styles.topic}>Topic: {consult.post_type}</Text>
-            <Text style={styles.date}>Ngày: {consult.created_at}</Text>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <View style={styles.containerAll}>
+          <View style={styles.header}>
+            <Image source={{ uri: consult.avatar }} style={styles.avatar} />
+
+            <View style={styles.infoContainer}>
+              <View style={styles.nameTopicContainer}>
+                <Text style={styles.name}>{consult.name}</Text>
+                <Text style={styles.topicContainer}>
+                  <Text style={styles.topicText}>
+                    Chủ đề: {consult.post_type}
+                  </Text>
+                </Text>
+              </View>
+              <Text style={styles.date}>Ngày: {consult.created_at}</Text>
+            </View>
           </View>
+
+          <Text style={styles.title}>{consult.title}</Text>
+
+          <Text style={styles.question}>{consult.question}</Text>
+
+          {consult.image_url && consult.image_url.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.imageContainer}
+            >
+              {consult.image_url.map((item, index) => (
+                <Pressable key={index} onPress={() => openImageModal(item)}>
+                  <Image source={{ uri: item }} style={styles.postImage} />
+                </Pressable>
+              ))}
+            </ScrollView>
+          )}
+
+          <Text style={styles.content}>{consult.content}</Text>
         </View>
 
-        <Text style={styles.title}>{consult.title}</Text>
-
-        <Text style={styles.question}>{consult.question}</Text>
-
-        {consult.image_url && (
-          <Image source={{ uri: consult.image_url }} style={styles.postImage} />
-        )}
-
-        <Text style={styles.content}>{consult.content}</Text>
-      </View>
-
-      <View style={styles.containerButtonModal}>
-        <Pressable
-          style={styles.buttonModal}
-          onPress={() => setCommentModalVisible(true)}
-        >
-          <Text style={styles.buttonTextModal}>Xem tất cả bình luận</Text>
-        </Pressable>
-      </View>
-
-      <GestureHandlerRootView style={styles.containerFeedback}>
-        <CommentConsult
+        <FeedbackConsult
           visible={isCommentModalVisible}
           onClose={() => setCommentModalVisible(false)}
           commentList={commentList}
@@ -95,8 +112,14 @@ const DetailConsult = () => {
           setNewComment={setNewComment}
           handleAddComment={handleAddComment}
         />
-      </GestureHandlerRootView>
-    </ScrollView>
+
+        <ImageModal
+          isVisible={isImageModalVisible}
+          image_url={selectedImage}
+          onClose={() => setImageModalVisible(false)}
+        />
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 };
 
@@ -122,17 +145,30 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
   },
+  nameTopicContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   name: {
     fontWeight: "bold",
     fontSize: 16,
+    marginRight: 8,
   },
-  topic: {
-    color: "#888",
+  topicContainer: {
+    backgroundColor: "#E0F7FA", 
+    borderRadius: 20, 
+    paddingVertical: 5, 
+    paddingHorizontal: 10, 
+  },
+  topicText: {
+    color: "#00796B",
     fontSize: 14,
+    fontWeight: "bold", 
   },
   date: {
     color: "#888",
-    fontSize: 12,
+    fontSize: 14,
   },
   title: {
     fontSize: 20,
@@ -143,30 +179,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
   },
+  imageContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
   postImage: {
-    width: "100%",
+    width: 200,
     height: 200,
     borderRadius: 8,
-    marginBottom: 8,
+    marginRight: 10,
   },
   content: {
     fontSize: 16,
-    marginBottom: 16,
   },
   containerFeedback: {
     flex: 1,
   },
   containerButtonModal: {
-    alignItems: "center", 
+    alignItems: "center",
     marginVertical: 10,
   },
   buttonModal: {
-    backgroundColor: "#007BFF", 
+    backgroundColor: "#007BFF",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5, 
+    borderRadius: 5,
     elevation: 2,
-    shadowColor: "#000", 
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -175,9 +214,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2.5,
   },
   buttonTextModal: {
-    color: "white", 
-    fontSize: 16, 
-    fontWeight: "bold", 
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
