@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons"; // Đảm bảo bạn cài đặt react-native-vector-icons
+import { FontAwesome } from "@expo/vector-icons"; 
 import ModalEdit from "../my_consult/modal_edit_consult";
 
 type Consult = {
