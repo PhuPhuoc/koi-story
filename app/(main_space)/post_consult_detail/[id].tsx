@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import ConsultData from "../../../dummy_data/dummy_post_consult.json";
 import CommentData from "../../../dummy_data/dummy_comment_consult.json";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import ImageModal from "../../../components/image_modal/image_modal";
 import FeedbackConsult from "../../../components/feedback/feedback_consult";
 
@@ -65,7 +65,7 @@ const DetailConsult = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.containerAll}>
           <View style={styles.header}>
             <Image source={{ uri: consult.avatar }} style={styles.avatar} />
@@ -87,20 +87,21 @@ const DetailConsult = () => {
 
           <Text style={styles.question}>{consult.question}</Text>
 
-          {consult.image_url && consult.image_url.length > 0 && (
-            <ScrollView
+            {/* Horizontal Image Carousel using FlatList */}
+            {consult.image_url && consult.image_url.length > 0 && (
+            <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.imageContainer}
-            >
-              {consult.image_url.map((item, index) => (
-                <Pressable key={index} onPress={() => openImageModal(item)}>
+              data={consult.image_url}
+              renderItem={({ item }) => (
+                <Pressable onPress={() => openImageModal(item)}>
                   <Image source={{ uri: item }} style={styles.postImage} />
                 </Pressable>
-              ))}
-            </ScrollView>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
           )}
-
           <Text style={styles.content}>{consult.content}</Text>
         </View>
 
@@ -118,7 +119,7 @@ const DetailConsult = () => {
           image_url={selectedImage}
           onClose={() => setImageModalVisible(false)}
         />
-      </ScrollView>
+      </View>
     </GestureHandlerRootView>
   );
 };
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    overflow: "scroll"
   },
   containerAll: {
     padding: 16,

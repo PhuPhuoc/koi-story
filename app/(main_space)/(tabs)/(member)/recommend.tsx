@@ -12,7 +12,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import CarouselComponent from "../../../../components/carousel/carousel";
 
-const recommend = () => {
+const Recommend = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const renderItem = ({
@@ -123,4 +123,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-export default recommend;
+export default Recommend;
