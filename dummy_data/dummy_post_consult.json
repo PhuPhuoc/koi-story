@@ -7,8 +7,12 @@
     "post_type": "Tư vấn",
     "title": "Cá Koi phù hợp cho năm 2025",
     "question": "Năm 2025 nên nuôi cá Koi loại gì cho may mắn?",
-    "image_url": "https://img.freepik.com/premium-vector/koi-fish-illustration-japanese-carp-colorful-oriental-koi-asia-set-chinese-goldfish-traditional-fishery-isolated-background_177886-210.jpg",
-    "content": "Người tuổi Sửu sinh vào những năm: 1949 (Kỷ Sửu), 1961 (Tân Sửu)..."
+    "content": "Người tuổi Sửu sinh vào những năm: 1949 (Kỷ Sửu), 1961 (Tân Sửu)...",
+    "image_url": [
+      "https://img.freepik.com/premium-vector/koi-fish-illustration-japanese-carp-colorful-oriental-koi-asia-set-chinese-goldfish-traditional-fishery-isolated-background_177886-210.jpg",
+      "https://cdn.shopify.com/s/files/1/1083/2612/files/koi2_480x480.jpg?v=1719301650",
+      "https://cdn.shopify.com/s/files/1/0068/0394/7579/files/29491908_s_600x600.jpg?v=1712932205"
+    ]
   },
   {
     "id": 2,
@@ -18,7 +22,11 @@
     "post_type": "Tư vấn",
     "title": "Cá Koi phù hợp cho năm 2025",
     "question": "Năm 2025 nên nuôi cá Koi loại gì cho may mắn?",
-    "image_url": "https://img.freepik.com/premium-vector/koi-fish-illustration-japanese-carp-colorful-oriental-koi-asia-set-chinese-goldfish-traditional-fishery-isolated-background_177886-210.jpg",
-    "content": "Người tuổi Sửu sinh vào những năm: 1949 (Kỷ Sửu), 1961 (Tân Sửu)..."
+    "content": "Người tuổi Sửu sinh vào những năm: 1949 (Kỷ Sửu), 1961 (Tân Sửu)...",
+    "image_url": [
+      "https://img.freepik.com/premium-vector/koi-fish-illustration-japanese-carp-colorful-oriental-koi-asia-set-chinese-goldfish-traditional-fishery-isolated-background_177886-210.jpg",
+      "https://cdn.shopify.com/s/files/1/1083/2612/files/koi2_480x480.jpg?v=1719301650",
+      "https://cdn.shopify.com/s/files/1/0068/0394/7579/files/29491908_s_600x600.jpg?v=1712932205"
+    ]
   }
 ]

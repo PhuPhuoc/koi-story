@@ -16,7 +16,7 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Feedback from "../../../components/feedback/Feedback";
+import Feedback from "../../../components/feedback/feedback_market";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const PostMarketDetail = () => {
@@ -148,6 +148,7 @@ const PostMarketDetail = () => {
         <FlatList
           data={DUMMY_DATA.image}
           horizontal
+          showsHorizontalScrollIndicator={false}
           renderItem={({ item: image }) => (
             <TouchableOpacity
               onPress={() => handleImagePress(image)}
