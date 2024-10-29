@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, FlatList } from "react-native";
 import ConsultData from "../../dummy_data/dummy_post_consult.json";
 import {
@@ -51,6 +51,11 @@ const ConsultCard = ({ consult }: { consult: Consult }) => {
 
 const ConsultPost = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const handleRefresh = async () => {
+    setLoading(false);
+  };
 
   return (
     <FlatList
@@ -66,6 +71,8 @@ const ConsultPost = () => {
           </TouchableOpacity>
         </GestureHandlerRootView>
       )}
+      onRefresh={handleRefresh}
+      refreshing={loading}
     />
   );
 };
@@ -111,17 +118,17 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   topicContainer: {
-    backgroundColor: "#E0F7FA", 
-    borderRadius: 20, 
-    paddingVertical: 5, 
-    paddingHorizontal: 10, 
-    marginBottom: 8, 
-    alignSelf: 'flex-start', 
+    backgroundColor: "#E0F7FA",
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginBottom: 8,
+    alignSelf: "flex-start",
   },
   topicText: {
     color: "#00796B",
     fontSize: 14,
-    fontWeight: "bold", 
+    fontWeight: "bold",
   },
   title: {
     color: "#333",

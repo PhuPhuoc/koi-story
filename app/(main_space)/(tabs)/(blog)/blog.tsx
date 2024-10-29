@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,8 +12,39 @@ import dummy from "../../../../dummy_data/dummy_blog.json";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CarouselComponent from "../../../../components/carousel/carousel";
 import GradientText from "../../../../components/gradient_text/gradient_text";
+import { MaterialIcons } from "@expo/vector-icons";
+import { THEME_COLOR } from "../../../../constants/const";
+
+const uniqueTitles = Array.from(new Set(dummy.map((item) => item.title)));
 
 const BlogPage = () => {
+  const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const filteredData = selectedTitle
+    ? dummy.filter((item) => item.title === selectedTitle)
+    : dummy;
+
+  const renderFilterItem = ({ item }: { item: string }) => (
+    <TouchableOpacity
+      style={[
+        styles.filterCard,
+        selectedTitle === item && styles.selectedFilterCard,
+      ]}
+      onPress={() => setSelectedTitle(item === selectedTitle ? null : item)}
+    >
+      <MaterialIcons
+        name="filter-list"
+        size={24}
+        color="black"
+        style={styles.icon}
+      />
+      <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">
+        {item}
+      </Text>
+    </TouchableOpacity>
+  );
+
   const renderItem = ({
     item,
   }: {
@@ -36,6 +68,10 @@ const BlogPage = () => {
     </TouchableOpacity>
   );
 
+  const handleRefresh = async () => {
+    setLoading(false);
+  };
+
   return (
     <GestureHandlerRootView style={styles.root}>
       <ScrollView>
@@ -50,11 +86,22 @@ const BlogPage = () => {
         <CarouselComponent />
 
         <FlatList
-          data={dummy}
+          data={uniqueTitles}
+          renderItem={renderFilterItem}
+          keyExtractor={(item) => item}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterContainer}
+        />
+
+        <FlatList
+          data={filteredData}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           scrollEnabled={false}
           contentContainerStyle={styles.container}
+          onRefresh={handleRefresh}
+          refreshing={loading}
         />
       </ScrollView>
     </GestureHandlerRootView>
@@ -92,11 +139,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  price: {
-    fontSize: 16,
-    color: "#888",
-    marginVertical: 5,
-  },
   description: {
     fontSize: 14,
     color: "#666",
@@ -113,7 +155,37 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     justifyContent: "center",
-    alignItems: "center",  },
+    alignItems: "center",
+  },
+  filterContainer: {
+    paddingVertical: 10,
+    paddingLeft: 20,
+  },
+  filterCard: {
+    backgroundColor: THEME_COLOR,
+    borderRadius: 8,
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  selectedFilterCard: {
+    backgroundColor: "#cceeff",
+  },
+  filterText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 5,
+    maxWidth: "100%",
+  },
+
+  icon: {
+    color: "white",
+    marginBottom: 5,
+  },
 });
 
 export default BlogPage;

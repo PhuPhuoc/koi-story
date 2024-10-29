@@ -1,100 +1,126 @@
 import React, { useState } from "react";
-import { View, ActivityIndicator } from "react-native";
-import { WebView } from "react-native-webview";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import dummy from "../../../../dummy_data/dummy_blog.json";
+import CarouselComponent from "../../../../components/carousel/carousel";
 
-const RecommendPage = () => {
-  const link =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7xEokJSMqs--m0NL2SGgWqpsc4ux5Xpwv8g&s";
-  const [htmlContent, setHtmlContent] = useState<string | null>(`
-  <html>
-    <head>
-      <style>
-        body {
-          font-family: Arial, sans-serif; 
-          margin: 0; 
-          padding: 20px; 
-          background-color: #f4f4f9;
-          color: #444;
-        }
-        h1 {
-          font-size: 2.5em; 
-          color: #4a90e2; 
-          margin-bottom: 10px;
-        }
-        h2 {
-          font-size: 3em; 
-          margin-top: 20px; 
-          margin-bottom: 10px;
-        }
-        p {
-          font-size: 3em; 
-          line-height: 1.6; 
-          margin-bottom: 20px;
-        }
-        img {
-          width: 100%;  
-          height: auto;
-          max-height: 500px;
-          border-radius: 25px; 
-          margin: 10px auto; 
-          display: block;
-        }
-        .bottom {
-          margin-bottom: 250px;
-        }
-      </style>
-    </head>
-    <body>
-      <h1>The Importance of Good Typography</h1>
-      <p>
-        Typography plays a crucial role in design, affecting readability and user experience. A well-chosen typeface can convey a brand's personality, while poor typography can detract from even the best design. In this blog post, we will explore various typefaces and their impact on communication.
-      </p>
-      <img src="${link}" alt="Typography" />
-      
-      <h2>Color Theory in Design</h2>
-      <p>
-        Understanding color theory is essential for any designer. Colors evoke emotions and can influence decision-making. This post discusses how to choose color palettes that resonate with your target audience and create visually appealing designs.
-      </p>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvEYnxugqvXMcuXWmIxP5OfhtSMyJFjno0Tg&s" alt="Color Theory" />
-      
-      <h2>Designing for User Experience</h2>
-      <p>
-        User experience (UX) is at the heart of successful design. This blog post will delve into the principles of UX design and how to create intuitive interfaces that enhance user satisfaction. We will also share some best practices to keep in mind when designing for usability.
-      </p>
-      <img src="https://i.pinimg.com/236x/81/63/78/81637861f1566bb718979b454ce94eed.jpg" alt="User Experience" />
-      
-      <h2>The Impact of Visual Hierarchy</h2>
-      <p>
-        Visual hierarchy is crucial in guiding users through content. This entry explores how to structure content effectively to improve user comprehension and engagement.
-      </p>
-      <img src="https://i.pinimg.com/236x/46/45/43/464543d7ee4269313c8b72b9816dfa69.jpg" alt="Visual Hierarchy" />
-      
-      <h2>Exploring Minimalist Design</h2>
-      <p>
-        Minimalism in design emphasizes simplicity and clarity. This blog discusses the principles of minimalist design and how to apply them to create clean and effective interfaces.
-      </p>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdPRkX-LWJF5Q20yssHr3JXaaleTHe-MHprA&s" alt="Minimalist Design" />
-      
-      <p class="bottom">
-        Enjoy our insights into design and creativity through these blog posts. Thank you for reading!
-      </p>
-    </body>
-  </html>
-`);
+const recommend = () => {
+  const [loading, setLoading] = useState<boolean>(true);
 
-  if (!htmlContent) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
+  const renderItem = ({
+    item,
+  }: {
+    item: {
+      id: number;
+      title: string;
+      author: string;
+      content: string;
+      image: string;
+    };
+  }) => (
+    <TouchableOpacity style={styles.card} onPress={() => console.log()}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={styles.textContainer}>
+        <Text style={styles.artName}>{item.title}</Text>
+        <Text>{item.author}</Text>
+        <Text style={styles.description} numberOfLines={2}>
+          {item.content}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const handleRefresh = async () => {
+    setLoading(false);
+  };
 
   return (
-    <View style={{ flex: 1 }}>
-      <WebView
-        originWhitelist={["*"]}
-        source={{ html: htmlContent }}
-        style={{ flex: 1 }}
-      />
-    </View>
+    <GestureHandlerRootView style={styles.root}>
+      <ScrollView>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title1}>Cá koi hợp mệnh</Text>
+        </View>
+
+        <View style={styles.iconContainer}>
+          <Text style={styles.title1}>𓆝 𓆟 𓆞 𓆝 𓆟</Text>
+        </View>
+
+        <CarouselComponent />
+        <FlatList
+          data={dummy}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          scrollEnabled={false}
+          contentContainerStyle={styles.container}
+          onRefresh={handleRefresh}
+          refreshing={loading}
+        />
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 };
 
-export default RecommendPage;
+const styles = StyleSheet.create({
+  root: {
+    backgroundColor: "#fff",
+  },
+  container: {
+    padding: 20,
+    paddingBottom: 100,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  image: {
+    width: "100%",
+    height: 150,
+    borderRadius: 8,
+  },
+  textContainer: {
+    marginTop: 10,
+  },
+  artName: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  price: {
+    fontSize: 16,
+    color: "#888",
+    marginVertical: 5,
+  },
+  description: {
+    fontSize: 14,
+    color: "#666",
+  },
+  titleContainer: {
+    flexDirection: "row",
+    marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title1: {
+    fontSize: 28,
+    fontWeight: "bold",
+  },
+  iconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+export default recommend;

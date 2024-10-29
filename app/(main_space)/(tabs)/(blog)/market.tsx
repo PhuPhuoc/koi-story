@@ -26,7 +26,12 @@ const MarketPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState(dummy);
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [loading, setLoading] = useState<boolean>(true);
   const route = useRouter();
+
+  const handleRefresh = async () => {
+    setLoading(false);
+  };
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
@@ -113,7 +118,10 @@ const MarketPage = () => {
             >
               <View style={styles.imageContainer}>
                 <View
-                  style={[styles.ribbonContainer, { backgroundColor: ribbonColor }]}
+                  style={[
+                    styles.ribbonContainer,
+                    { backgroundColor: ribbonColor },
+                  ]}
                 >
                   <Text style={styles.ribbonText}>{ribbonText}</Text>
                 </View>
@@ -142,6 +150,8 @@ const MarketPage = () => {
             </TouchableOpacity>
           );
         }}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
     </View>
   );
@@ -150,22 +160,22 @@ const MarketPage = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   searchContainer: {
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   searchInput: {
     padding: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 8,
     fontSize: 16,
   },
   filterWrapper: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   filterContainer: {
     paddingHorizontal: 10,
@@ -176,9 +186,9 @@ const styles = StyleSheet.create({
     height: 36,
     paddingHorizontal: 16,
     borderRadius: 18,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f5f5f5",
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 4,
     borderWidth: 0,
   },
@@ -187,11 +197,11 @@ const styles = StyleSheet.create({
   },
   filterButtonText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
+    fontWeight: "500",
+    color: "#666",
   },
   activeFilterText: {
-    color: '#fff',
+    color: "#fff",
   },
   listContainer: {
     padding: 8,
@@ -200,23 +210,23 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     margin: 4,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 8,
-    maxWidth: '50%',
-    shadowColor: '#000',
+    maxWidth: "50%",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
   },
   imageContainer: {
-    position: 'relative',
+    position: "relative",
     aspectRatio: 1,
     marginBottom: 8,
   },
   ribbonContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     paddingVertical: 4,
@@ -225,13 +235,13 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   ribbonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 8,
   },
   textContainer: {
@@ -239,29 +249,29 @@ const styles = StyleSheet.create({
   },
   artName: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     lineHeight: 18,
   },
   description: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     lineHeight: 16,
   },
   price: {
     fontSize: 16,
-    color: 'red',
-    fontWeight: 'bold',
+    color: "red",
+    fontWeight: "bold",
     marginTop: 2,
   },
   timeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 8,
   },
   timeText: {
     marginLeft: 4,
     fontSize: 12,
-    color: '#666',
+    color: "#666",
   },
 });
 

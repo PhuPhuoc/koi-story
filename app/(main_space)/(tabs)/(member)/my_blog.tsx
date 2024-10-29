@@ -15,6 +15,12 @@ import AddMyMarket from "../../../../components/my_market/AddMyMarketModal";
 
 export default function CreateProductForm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const handleRefresh = async () => {
+    setLoading(false);
+  };
+
   const openModal = () => {
     setIsModalVisible(true);
   };
@@ -22,6 +28,7 @@ export default function CreateProductForm() {
   const closeModal = () => {
     setIsModalVisible(false);
   };
+  
   const renderItem = ({
     item,
   }: {
@@ -52,6 +59,8 @@ export default function CreateProductForm() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContentContainer}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       <TouchableOpacity style={styles.floatingButton} onPress={openModal}>
