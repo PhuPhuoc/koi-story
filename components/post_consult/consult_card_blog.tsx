@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, FlatList } from "react-native";
 import ConsultData from "../../dummy_data/dummy_post_consult.json";
 import {
@@ -23,28 +23,29 @@ const ConsultCard = ({ consult }: { consult: Consult }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-            <Image source={{ uri: consult.avatar }} style={styles.avatar} />
-            <View style={styles.infoContainer}>
-              <View style={styles.nameTopicContainer}>
-                <Text style={styles.name}>{consult.name}</Text>
-                <Text style={styles.topicContainer}>
-                  <Text style={styles.topicText}>
-                    Chủ đề: {consult.post_type}
-                  </Text>
-                </Text>
-              </View>
-              <Text style={styles.date}>Ngày: {consult.created_at}</Text>
-            </View>
+        <Image source={{ uri: consult.avatar }} style={styles.avatar} />
+        <View style={styles.infoContainer}>
+          <View style={styles.nameTopicContainer}>
+            <Text style={styles.name}>{consult.name}</Text>
+            <Text style={styles.topicContainer}>
+              <Text style={styles.topicText}>Chủ đề: {consult.post_type}</Text>
+            </Text>
           </View>
+          <Text style={styles.date}>Ngày: {consult.created_at}</Text>
+        </View>
+      </View>
       <Text style={styles.title}>{consult.title}</Text>
 
       <Text style={styles.question}>{consult.question}</Text>
 
       {consult.image_url && consult.image_url.length > 0 ? (
-        <Image source={{ uri: consult.image_url[0] }} style={styles.postImage} />
+        <Image
+          source={{ uri: consult.image_url[0] }}
+          style={styles.postImage}
+        />
       ) : (
         <Image
-          source={require("../../assets/placeholder.jpg")} 
+          source={require("../../assets/placeholder.jpg")}
           style={styles.postImage}
         />
       )}
@@ -58,6 +59,10 @@ const ConsultCard = ({ consult }: { consult: Consult }) => {
 
 const ConsultPostBlog = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(true);
+  const handleRefresh = async () => {
+    setLoading(false);
+  };
 
   return (
     <FlatList
@@ -73,6 +78,8 @@ const ConsultPostBlog = () => {
           </TouchableOpacity>
         </GestureHandlerRootView>
       )}
+      onRefresh={handleRefresh}
+      refreshing={loading}
     />
   );
 };
@@ -117,15 +124,15 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   topicContainer: {
-    backgroundColor: "#E0F7FA", 
-    borderRadius: 20, 
-    paddingVertical: 5, 
-    paddingHorizontal: 10, 
+    backgroundColor: "#E0F7FA",
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   topicText: {
     color: "#00796B",
     fontSize: 14,
-    fontWeight: "bold", 
+    fontWeight: "bold",
   },
   date: {
     color: "#888",

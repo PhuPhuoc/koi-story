@@ -15,6 +15,7 @@ import { THEME_COLOR } from "../../constants/const";
 const AddConsult = ({ closeModal }: any) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [question, setQuestion] = useState("");
   const [images, setImages] = useState<string[]>([
     "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
     "https://static.vecteezy.com/system/resources/thumbnails/036/053/722/small/ai-generated-cat-wearing-heart-shaped-sunglasses-lying-on-a-pillow-free-photo.jpeg",
@@ -23,6 +24,7 @@ const AddConsult = ({ closeModal }: any) => {
 
   const [isTitleFocused, setTitleFocused] = useState(false);
   const [isDescriptionFocused, setDescriptionFocused] = useState(false);
+  const [isQuestionFocused, setQuestionFocused] = useState(false);
 
   const handleImagePicker = async () => {
     const permissionResult =
@@ -47,13 +49,12 @@ const AddConsult = ({ closeModal }: any) => {
     }
   };
 
-  // Thêm hàm xóa ảnh
   const handleRemoveImage = (indexToRemove: number) => {
     setImages(images.filter((_, index) => index !== indexToRemove));
   };
 
   const handleSubmit = () => {
-    if (!title || !description || images.length === 0) {
+    if (!title || !description || !question || images.length === 0) {
       Alert.alert("Validation Error", "All fields are required.");
       return;
     }
@@ -70,6 +71,16 @@ const AddConsult = ({ closeModal }: any) => {
         placeholder="Nhập tiêu đề"
         value={title}
         onChangeText={setTitle}
+        onFocus={() => setTitleFocused(true)}
+        onBlur={() => setTitleFocused(false)}
+      />
+
+      <Text style={styles.label}>Câu hỏi</Text>
+      <TextInput
+        style={[styles.input, isQuestionFocused && styles.inputFocused]}
+        placeholder="Nhập câu hỏi"
+        value={question}
+        onChangeText={setQuestion}
         onFocus={() => setTitleFocused(true)}
         onBlur={() => setTitleFocused(false)}
       />
