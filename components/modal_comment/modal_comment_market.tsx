@@ -11,11 +11,10 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface FeedbackMarket {
-  id: number;
+  id: string;
   name: string;
-  time: string;
-  rating: number;
-  comment: string;
+  created_at: string;
+  content: string;
   avatar: string;
 }
 
@@ -24,10 +23,12 @@ interface CommentModalProps {
   onClose: () => void;
   feedbackList: FeedbackMarket[];
   renderFeedbackItem: (item: { item: FeedbackMarket }) => JSX.Element;
-  renderStarRating: () => JSX.Element;
   newComment: string;
   setNewComment: (comment: string) => void;
-  handleAddComment: () => void;
+  handleAddComment: (user_id: string) => void;
+  editingCommentId: string | null;
+  setEditingCommentId: (id: string | null) => void;
+  handleEditComment: (comment_id: string, content: string) => void;
 }
 
 const CommentMarket: React.FC<CommentModalProps> = ({
@@ -35,11 +36,15 @@ const CommentMarket: React.FC<CommentModalProps> = ({
   onClose,
   feedbackList,
   renderFeedbackItem,
-  renderStarRating,
   newComment,
   setNewComment,
   handleAddComment,
+  editingCommentId,
+  setEditingCommentId,
+  handleEditComment,
 }) => {
+  const userId = "e752aff2-d424-4423-96a9-63a6f8072104";
+
   return (
     <Modal visible={visible} animationType="slide">
       <View style={styles.modalContainer}>
@@ -56,11 +61,8 @@ const CommentMarket: React.FC<CommentModalProps> = ({
         <FlatList
           data={feedbackList}
           renderItem={renderFeedbackItem}
-          keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
         />
-
-        {renderStarRating()}
 
         <View style={styles.inputContainer}>
           <TextInput
@@ -69,9 +71,25 @@ const CommentMarket: React.FC<CommentModalProps> = ({
             value={newComment}
             onChangeText={setNewComment}
           />
-          <Pressable onPress={handleAddComment} style={styles.sendButton}>
-            <MaterialCommunityIcons name="send" size={24} color="#000" />
-          </Pressable>
+          {editingCommentId ? (
+            <Pressable
+              onPress={() => {
+                handleEditComment(editingCommentId, newComment);
+                setEditingCommentId(null); 
+                setNewComment(""); 
+              }}
+              style={styles.saveButton}
+            >
+              <Text style={styles.saveButtonText}>Lưu</Text>
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => handleAddComment(userId)}
+              style={styles.sendButton}
+            >
+              <MaterialCommunityIcons name="send" size={24} color="#000" />
+            </Pressable>
+          )}
         </View>
       </View>
     </Modal>
@@ -112,6 +130,15 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     padding: 5,
+  },
+  saveButton: {
+    backgroundColor: "#007BFF",
+    padding: 10,
+    borderRadius: 5,
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 

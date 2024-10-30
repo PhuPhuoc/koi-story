@@ -205,6 +205,7 @@ const PostMarketDetail = () => {
                 <Text style={styles.buttonText}>GỌI ĐIỆN</Text>
               </TouchableOpacity>
             </View>
+            
             <View style={styles.addressContainer}>
               <TouchableOpacity
                 style={styles.circularIconBackground}
@@ -231,13 +232,6 @@ const PostMarketDetail = () => {
         <GestureHandlerRootView style={styles.container}>
           <Feedback />
         </GestureHandlerRootView>
-
-        {/* <View style={styles.fishContainer}>
-          <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
-          <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
-          <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
-          <FontAwesome6 name="fish-fins" size={24} color="#6499E9" />
-        </View> */}
       </ScrollView>
     </View>
   );
@@ -269,11 +263,11 @@ const styles = StyleSheet.create({
 
   tooltip: {
     position: "absolute",
-    top: -40, 
-    left: -120, 
+    top: -40,
+    left: -120,
     backgroundColor: "rgba(0, 0, 0, 0.8)",
     paddingVertical: 6,
-    paddingHorizontal: 10, 
+    paddingHorizontal: 10,
     borderRadius: 5,
     zIndex: 10,
     width: 150,
@@ -281,7 +275,7 @@ const styles = StyleSheet.create({
   tooltipText: {
     color: "#fff",
     fontSize: 14,
-    textAlign: "left", 
+    textAlign: "left",
   },
   backButton: {
     position: "absolute",
@@ -450,7 +444,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginHorizontal: 10,
     marginBottom: 10,
-    padding: 20, 
+    padding: 20,
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {
@@ -462,9 +456,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   infoRow: {
-    marginBottom: 16, 
+    marginBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0", 
+    borderBottomColor: "#f0f0f0",
     paddingBottom: 16,
   },
   infoItem: {
