@@ -87,11 +87,21 @@ export const createMarket = async (data: CreateMarket): Promise<ApiResponseCreat
       data
     );
     return response.data;
-  } catch (error) {
-    console.error("Error creating market data:", error);
-    return "Error creating market data";
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      const { data } = error.response;
+      const message = data.error || "An error occurred while creating the market post.";
+      
+      const errorDetails = `${message}`;
+      return errorDetails;
+    } else {
+      console.error("Unexpected error:", error);
+      return "Unexpected error occurred while creating the market post.";
+    }
   }
 };
+
+
 
 
 

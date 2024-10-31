@@ -54,8 +54,9 @@ const RegisterPage = () => {
     }
 
     const response = await Register(email, password, userName, confirmPassword);
-    if ("data" in response) {
+    if ("message" in response) {
       Alert.alert("Registration successful:", response.message);
+      router.back();
     } else {
       Alert.alert("Registration error:", response.log);
     }
