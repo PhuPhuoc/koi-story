@@ -11,20 +11,33 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { THEME_COLOR } from "../../constants/const";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../firebaseConfig";
+
+const uploadImageToFirebase = async (uri: string) => {
+  try {
+    // Fetch the image as a blob
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const filename = `images/${Date.now()}_${uri.split("/").pop()}`; // Create a unique filename
+    const storageRef = ref(storage, filename);
+
+    // Upload the image
+    await uploadBytes(storageRef, blob);
+    // Retrieve the download URL
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL; // Return the URL
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null; // Return null if an error occurs
+  }
+};
 
 const AddConsult = ({ closeModal }: any) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [question, setQuestion] = useState("");
-  const [images, setImages] = useState<string[]>([
-    "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-    "https://static.vecteezy.com/system/resources/thumbnails/036/053/722/small/ai-generated-cat-wearing-heart-shaped-sunglasses-lying-on-a-pillow-free-photo.jpeg",
-    "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-  ]);
-
-  const [isTitleFocused, setTitleFocused] = useState(false);
-  const [isDescriptionFocused, setDescriptionFocused] = useState(false);
-  const [isQuestionFocused, setQuestionFocused] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
 
   const handleImagePicker = async () => {
     const permissionResult =
@@ -53,11 +66,24 @@ const AddConsult = ({ closeModal }: any) => {
     setImages(images.filter((_, index) => index !== indexToRemove));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title || !description || !question || images.length === 0) {
       Alert.alert("Validation Error", "All fields are required.");
       return;
     }
+
+    const imageUrls: string[] = [];
+    for (const image of images) {
+      const url = await uploadImageToFirebase(image);
+      if (url) {
+        imageUrls.push(url);
+      } else {
+        Alert.alert("Upload Error", "Failed to upload some images.");
+      }
+    }
+
+    console.log("Uploaded Image URLs:", imageUrls);
+
     closeModal();
   };
 
@@ -67,41 +93,31 @@ const AddConsult = ({ closeModal }: any) => {
 
       <Text style={styles.label}>Tiêu đề</Text>
       <TextInput
-        style={[styles.input, isTitleFocused && styles.inputFocused]}
+        style={styles.input}
         placeholder="Nhập tiêu đề"
         value={title}
         onChangeText={setTitle}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
       />
 
       <Text style={styles.label}>Câu hỏi</Text>
       <TextInput
-        style={[styles.input, isQuestionFocused && styles.inputFocused]}
+        style={styles.input}
         placeholder="Nhập câu hỏi"
         value={question}
         onChangeText={setQuestion}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
       />
 
       <Text style={styles.label}>Mô tả</Text>
       <TextInput
-        style={[
-          styles.input,
-          styles.descriptionInput,
-          isDescriptionFocused && styles.inputFocused,
-        ]}
+        style={[styles.input, styles.descriptionInput]}
         placeholder="Nhập mô tả"
         value={description}
         onChangeText={setDescription}
         multiline
         numberOfLines={4}
-        onFocus={() => setDescriptionFocused(true)}
-        onBlur={() => setDescriptionFocused(false)}
       />
 
-      <Text style={styles.label}>Hỉnh ảnh</Text>
+      <Text style={styles.label}>Hình ảnh</Text>
       <Pressable style={styles.imagePicker} onPress={handleImagePicker}>
         <Text style={styles.imagePickerText}>Chọn ảnh</Text>
       </Pressable>
@@ -153,19 +169,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 15,
   },
-  inputFocused: {
-    borderColor: "#80B3FF",
+  descriptionInput: {
+    height: 80,
+    textAlignVertical: "top",
+    padding: 8,
   },
   label: {
     fontSize: 14,
     fontWeight: "600",
     color: "#333",
     marginBottom: 5,
-  },
-  descriptionInput: {
-    height: 80,
-    textAlignVertical: "top",
-    padding: 8,
   },
   imagePicker: {
     backgroundColor: "#ddd",
@@ -191,7 +204,6 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 10,
   },
-  // Style cho nút xóa
   removeImageButton: {
     position: "absolute",
     top: 0,
@@ -202,11 +214,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
   removeImageText: {
     color: "black",
