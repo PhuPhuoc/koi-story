@@ -5,7 +5,6 @@ interface MarketImage {
   id: string;
   image_url: string;
 }
-
 export interface MarketData {
   id: string;
   product_name: string;
@@ -19,7 +18,6 @@ export interface MarketData {
   address: string;
   ListImage: MarketImage[];
 }
-
 export interface MarketDataList {
   post_id: string;
   product_name: string;
@@ -37,24 +35,50 @@ export interface CreateMarket {
   user_id: string;
   listImageUrls: string[];
 }
+export interface UpdateMarket{
+  color: string;
+  description: string;
+  price: number;
+  origin: string;
+  product_name: string;
+  product_type: string;
+}
+
+export interface MyMarketData {
+  post_id: string;
+  product_name: string;
+  price: number;
+  product_type: string;
+  image_url: string;
+}
+
 
 interface ApiResponse {
   status: number;
   message: string;
   data: MarketData;
 }
-
 interface ApiResponseGetMarket {
   status: number;
   message: string;
   data: MarketDataList;
 }
-
 interface ApiResponseCreateMarket {
   status: number;
   message: string;
   data: CreateMarket;
 }
+interface ApiResponseUpdateMarket {
+  status: number;
+  message: string;
+  data: UpdateMarket;
+}
+interface ApiResponseMyMarket {
+  status: number;
+  message: string;
+  data: MyMarketData;
+}
+
 
 export const getMarketDetailById = async (id: string): Promise<ApiResponse | string> => {
   try {
@@ -87,11 +111,44 @@ export const createMarket = async (data: CreateMarket): Promise<ApiResponseCreat
       data
     );
     return response.data;
-  } catch (error) {
-    console.error("Error creating market data:", error);
-    return "Error creating market data";
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      const { data } = error.response;
+      const message = data.error || "An error occurred while creating the market post.";
+      
+      const errorDetails = `${message}`;
+      return errorDetails;
+    } else {
+      console.error("Unexpected error:", error);
+      return "Unexpected error occurred while creating the market post.";
+    }
   }
 };
+
+export const updateMarket = async (data: UpdateMarket, id: string): Promise<ApiResponseUpdateMarket | string> => {
+  try {
+    const response = await axios.put<ApiResponseUpdateMarket>(
+      `${API_URL}/post-market/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating market data:", error);
+    return "Error updating market data";
+  }
+};
+
+export const getMyMarket = async (user_id: string): Promise<ApiResponseMyMarket|string> => {
+  try {
+    const response = await axios.get(`${API_URL}/post-market/user/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting market data:", error);
+    return "Error deleting market data";
+  }
+};
+
+
 
 
 

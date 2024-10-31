@@ -142,7 +142,7 @@ const EditMyMarket: React.FC<EditMyMarketProps> = ({
       <Pressable style={styles.imagePicker} onPress={handleImagePicker}>
         <Text style={styles.imagePickerText}>Chọn ảnh</Text>
       </Pressable>
-
+ 
       <ScrollView horizontal style={styles.imageList}>
         {images.map((img, index) => (
           <View key={index} style={styles.imageContainer}>

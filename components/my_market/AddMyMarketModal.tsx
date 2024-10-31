@@ -134,7 +134,10 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
         if (url) {
           formData.listImageUrls.push(url);
         } else {
-          Alert.alert("Upload Error", "Failed to upload some images.");
+          Alert.alert(
+            "Upload Error",
+            "Failed to upload some images. Please retry."
+          );
         }
       }
 
@@ -266,9 +269,7 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
           {isSubmitting ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>
-              Tạo
-            </Text>
+            <Text style={styles.buttonText}>Tạo</Text>
           )}
         </Pressable>
         <Pressable

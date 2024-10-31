@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Linking,
+  Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -20,15 +21,20 @@ import {
   getMarketDetailById,
   MarketData,
 } from "../../../api/market/market_api";
+import ImageModal from "../../../components/image_modal/image_modal";
 
 const PostMarketDetail = () => {
   const { id } = useLocalSearchParams();
   const route = useRouter();
-  const dummyId = "4955380d-b21f-4de5-8f1d-d1c775294909";
   const [selectedImage, setSelectedImage] = useState<string>();
   const [liked, setLiked] = useState<boolean>(false);
   const [showAddressTooltip, setShowAddressTooltip] = useState(false);
   const [marketData, setMarketData] = useState<MarketData>();
+  const [isImageModalVisible, setImageModalVisible] = useState(false);
+
+  const openImageModal = () => {
+    setImageModalVisible(true);
+  };
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -84,13 +90,13 @@ const PostMarketDetail = () => {
         <AntDesign name="left" size={24} color="black" />
       </TouchableOpacity>
 
-      <View style={styles.imageContainer}>
+      <Pressable style={styles.imageContainer} onPress={() => openImageModal()}>
         <Image
           resizeMode="contain"
           style={styles.mainImage}
           source={{ uri: selectedImage }}
         />
-      </View>
+      </Pressable>
 
       <TouchableOpacity
         style={styles.likeButton}
@@ -170,8 +176,18 @@ const PostMarketDetail = () => {
       {marketData && renderKoiInfo(marketData.color, marketData.origin)}
 
       <GestureHandlerRootView style={styles.container}>
+<<<<<<< HEAD
         <Feedback post_id={dummyId}  />
       </GestureHandlerRootView>
+=======
+        <Feedback post_id={id as string} />
+      </GestureHandlerRootView>
+      <ImageModal
+        isVisible={isImageModalVisible}
+        image_url={selectedImage ?? ""}
+        onClose={() => setImageModalVisible(false)}
+      />
+>>>>>>> b7e428baf034568798bfd9ad320c8f28f70184c7
     </>
   );
 
