@@ -98,14 +98,6 @@ const AddConsult = ({ closeModal }: any) => {
         onChangeText={setTitle}
       />
 
-      <Text style={styles.label}>Câu hỏi</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nhập câu hỏi"
-        value={question}
-        onChangeText={setQuestion}
-      />
-
       <Text style={styles.label}>Mô tả</Text>
       <TextInput
         style={[styles.input, styles.descriptionInput]}
