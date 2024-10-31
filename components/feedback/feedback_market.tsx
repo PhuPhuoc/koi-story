@@ -22,7 +22,7 @@ interface FeedbackMarketProps {
   post_id: string;
 }
 
-const FeedbackMarket: React.FC<FeedbackMarketProps> = ({ post_id }) => {
+const FeedbackMarket: React.FC<FeedbackMarketProps> = (post_id:string) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
