@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,11 +13,31 @@ import { THEME_COLOR } from "../../../../constants/const";
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import AddMyMarket from "../../../../components/my_market/AddMyMarketModal";
 import { useRouter } from "expo-router";
+import { getMyMarket, MyMarketData } from "../../../../api/market/market_api";
+import { useAuth } from "../../../../context/auth.context";
 
 export default function CreateProductForm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const route = useRouter();
+  const [marketData, setMarketData] = useState<MyMarketData>();
+  const user_id = useAuth().userData?.id ?? "";
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const response = await getMyMarket(user_id);
+        if (typeof response === "object" && response.status === 200) {
+          setMarketData(response.data); 
+        } else {
+          console.error("Unexpected response format:", response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+      }
+    };
+    fetchMarketData();
+  }, []);
 
   const handleRefresh = async () => {
     setLoading(false);
@@ -30,39 +50,43 @@ export default function CreateProductForm() {
   const closeModal = () => {
     setIsModalVisible(false);
   };
-  
-  const renderItem = ({
-    item,
-  }: {
-    item: {
-      id: number;
-      title: string;
-      author: string;
-      content: string;
-      image: string;
-    };
-  }) => (
-    <TouchableOpacity style={styles.card}  onPress={() => route.navigate("post_market_detail/1")}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <View style={styles.textContainer}>
-        <Text style={styles.artName}>{item.title}</Text>
-        <Text>{item.author}</Text>
-        <Text style={styles.description} numberOfLines={2}>
-          {item.content}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={dummy}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContentContainer}
+        data={marketData}
+        keyExtractor={(item) => item.post_id.toString()} // Ensure `post_id` is a string
+        contentContainerStyle={styles.listContainer}
         onRefresh={handleRefresh}
         refreshing={loading}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => route.navigate(`post_market_detail/${item.post_id}`)} // Dynamically pass item.post_id
+          >
+            <View>
+              <View style={styles.imageContainer}>
+                <View
+                  style={[
+                    styles.ribbonContainer,
+                    { backgroundColor: THEME_COLOR },
+                  ]}
+                >
+                  <Text style={styles.ribbonText}>{item.product_type}</Text>
+                </View>
+                <Image
+                  source={{ uri: item.image_url }}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
+              </View>
+              <View>
+                <Text style={styles.artName}>{item.product_name}</Text>
+                <Text style={styles.price}>{(item.price)}đ</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
       />
 
       <TouchableOpacity style={styles.floatingButton} onPress={openModal}>
@@ -194,7 +218,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 150,
+    height: "100%",
     borderRadius: 8,
   },
   textContainer: {
@@ -216,6 +240,29 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 40,
+    fontWeight: "bold",
+  },
+  listContainer: {
+    padding: 8,
+    paddingBottom: 100,
+  },
+  imageContainer: {
+    position: "relative",
+    aspectRatio: 1,
+    marginBottom: 8,
+  },
+  ribbonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderTopRightRadius: 8,
+    zIndex: 1,
+  },
+  ribbonText: {
+    color: "#fff",
+    fontSize: 12,
     fontWeight: "bold",
   },
 });
