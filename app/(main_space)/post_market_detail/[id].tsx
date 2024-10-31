@@ -198,7 +198,7 @@ const PostMarketDetail = () => {
         {marketData && renderKoiInfo(marketData.color, marketData.origin)}
 
         <GestureHandlerRootView style={styles.container}>
-          <Feedback/>
+          <Feedback post_id={dummyId}/>
         </GestureHandlerRootView>
       </ScrollView>
     </View>
