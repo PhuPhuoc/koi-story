@@ -1,6 +1,7 @@
 import React, { createContext, useState, ReactNode, useContext } from "react";
 import { LoginWithEmailPassword } from "../api/authen/auth_api";
 import { Alert } from "react-native";
+import { router } from "expo-router";
 
 const duumyEmail: string = "tam";
 const duumyPass: string = "123";
@@ -33,6 +34,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if ("data" in response) {
       Alert.alert("Login successful:", response.message);
       setUserData(response.data);
+      setIsLoggedIn(true);
+      router.push("/(tabs)/blog");
     } else {
       Alert.alert("Login error:", response.log);
     }

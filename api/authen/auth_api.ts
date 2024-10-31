@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_URL } from "../../constants/const";
 
 interface UserData {
   id: string;
@@ -12,7 +13,7 @@ interface UserData {
 interface LoginResponse {
   status: number;
   message: string;
-  data: UserData; 
+  data: UserData;
 }
 
 interface ErrorResponse {
@@ -21,7 +22,6 @@ interface ErrorResponse {
   log: string;
 }
 
-// Union type for possible return values
 type AuthResponse = LoginResponse | ErrorResponse;
 
 export const LoginWithEmailPassword = async (
@@ -29,13 +29,10 @@ export const LoginWithEmailPassword = async (
   password: string
 ): Promise<AuthResponse> => {
   try {
-    const response = await axios.post<LoginResponse>(
-      "http://api.koistory.site/api/v1/users/login",
-      {
-        email,
-        password,
-      }
-    );
+    const response = await axios.post<LoginResponse>(`${API_URL}/users/login`, {
+      email,
+      password,
+    });
 
     return response.data;
   } catch (error) {
@@ -48,7 +45,7 @@ export const LoginWithEmailPassword = async (
     }
 
     return {
-      status: 500, // or another appropriate error code
+      status: 500,
       error: "Login failed. Please try again.",
       log: "Unexpected error occurred.",
     };
@@ -63,7 +60,7 @@ export const Register = async (
 ): Promise<AuthResponse> => {
   try {
     const response = await axios.post<LoginResponse>(
-      "http://api.koistory.site/api/v1/users/register",
+      `${API_URL}/users/register`,
       {
         email,
         password,
@@ -82,9 +79,8 @@ export const Register = async (
       };
     }
 
-    // General error fallback
     return {
-      status: 500, // or another appropriate error code
+      status: 500,
       error: "Registration failed. Please try again.",
       log: "Unexpected error occurred.",
     };
