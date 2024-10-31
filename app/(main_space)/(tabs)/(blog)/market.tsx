@@ -13,6 +13,7 @@ import dummy from "../../../../dummy_data/dummy_post_info.json";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import { THEME_COLOR } from "../../../../constants/const";
+import { useAuth } from "../../../../context/auth.context";
 
 const filterOptions = [
   { label: "All", value: "all" },

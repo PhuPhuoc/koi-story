@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import React, { useState } from "react";
-import { Stack, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import DUMMY_DATA from "../../../dummy_data/dummy_market_detail.json";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
@@ -18,14 +18,37 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Feedback from "../../../components/feedback/feedback_market";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  getMarketDetailById,
+  MarketData,
+} from "../../../api/market/market_api";
 
 const PostMarketDetail = () => {
-  const [selectedImage, setSelectedImage] = useState<string>(
-    DUMMY_DATA.image[0]
-  );
-  const [liked, setLiked] = useState<boolean>(false);
+  const { id } = useLocalSearchParams();
   const route = useRouter();
+  const dummyId = "4955380d-b21f-4de5-8f1d-d1c775294909";
+  const [selectedImage, setSelectedImage] = useState<string>();
+  const [liked, setLiked] = useState<boolean>(false);
   const [showAddressTooltip, setShowAddressTooltip] = useState(false);
+  const [marketData, setMarketData] = useState<MarketData>();
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const response = await getMarketDetailById(dummyId);
+
+        if (typeof response === "object" && response.status === 200) {
+          setMarketData(response.data);
+          setSelectedImage(response.data.ListImage[0]?.image_url || "");
+        } else {
+          console.error("Unexpected response format:", response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+      }
+    };
+    fetchMarketData();
+  }, []);
 
   const handlePressIn = () => {
     setShowAddressTooltip(true);
@@ -40,77 +63,25 @@ const PostMarketDetail = () => {
   };
 
   const handlePhonePress = () => {
-    Linking.openURL(`tel:${DUMMY_DATA.phone_number}`);
+    Linking.openURL(`tel:${marketData?.phone_number}`);
   };
 
-  const renderKoiInfo = () => (
+  const renderKoiInfo = (color: string, origin: string) => (
     <View style={styles.koiInfoContainer}>
       <View style={styles.infoRow}>
         <Text style={styles.title3}>Thông tin chi tiết </Text>
         <View style={styles.infoItem}>
           <MaterialCommunityIcons name="palette" size={24} color="#666" />
           <Text style={styles.infoLabel}>Màu sắc:</Text>
-          <Text style={styles.infoValue}>Kohaku</Text>
-        </View>
-      </View>
-
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <MaterialCommunityIcons name="ruler" size={24} color="#666" />
-          <Text style={styles.infoLabel}>Kích thước:</Text>
-          <Text style={styles.infoValue}>45-50cm</Text>
-        </View>
-      </View>
-
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <MaterialCommunityIcons name="fish" size={24} color="#666" />
-          <Text style={styles.infoLabel}>Loại:</Text>
-          <Text style={styles.infoValue}>Jumbo Tosai</Text>
+          <Text style={styles.infoValue}>{color}</Text>
         </View>
       </View>
 
       <View style={styles.infoRow}>
         <View style={styles.infoItem}>
           <MaterialCommunityIcons name="calendar" size={24} color="#666" />
-          <Text style={styles.infoLabel}>Tuổi:</Text>
-          <Text style={styles.infoValue}>5 tuổi</Text>
-        </View>
-      </View>
-    </View>
-  );
-
-  const renderOtherInfo = () => (
-    <View style={styles.koiInfoContainer}>
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <MaterialCommunityIcons name="palette" size={24} color="#666" />
-          <Text style={styles.infoLabel}>Loại:</Text>
-          <Text style={styles.infoValue}>Thức ăn</Text>
-        </View>
-      </View>
-
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <MaterialCommunityIcons name="ruler" size={24} color="#666" />
-          <Text style={styles.infoLabel}>Kích thước:</Text>
-          <Text style={styles.infoValue}>40 - 50 cm</Text>
-        </View>
-      </View>
-
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <MaterialCommunityIcons name="fish" size={24} color="#666" />
-          <Text style={styles.infoLabel}>Loại:</Text>
-          <Text style={styles.infoValue}>Jumbo Tosai</Text>
-        </View>
-      </View>
-
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <MaterialCommunityIcons name="calendar" size={24} color="#666" />
-          <Text style={styles.infoLabel}>Sử dụng:</Text>
-          <Text style={styles.infoValue}>1 năm</Text>
+          <Text style={styles.infoLabel}>Nguồn gốc:</Text>
+          <Text style={styles.infoValue}>{origin}</Text>
         </View>
       </View>
     </View>
@@ -146,25 +117,26 @@ const PostMarketDetail = () => {
         </TouchableOpacity>
 
         <FlatList
-          data={DUMMY_DATA.image}
+          data={marketData?.ListImage}
           horizontal
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item: image }) => (
+          renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => handleImagePress(image)}
+              onPress={() => handleImagePress(item.image_url)}
               style={[
                 styles.thumbnailContainer,
-                selectedImage === image && styles.selectedThumbnailContainer,
+                selectedImage === item.image_url &&
+                  styles.selectedThumbnailContainer,
               ]}
             >
               <Image
                 resizeMode="contain"
                 style={styles.thumbnail}
-                source={{ uri: image }}
+                source={{ uri: item.image_url }}
               />
             </TouchableOpacity>
           )}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={styles.thumbnailList}
         />
 
@@ -178,16 +150,16 @@ const PostMarketDetail = () => {
           >
             <View style={styles.typeChip}>
               <FontAwesome5 name="fish" size={20} color="white" />
-              <Text style={styles.typeText}>{DUMMY_DATA.product_type}</Text>
+              <Text style={styles.typeText}>{marketData?.product_type}</Text>
             </View>
             <Text style={styles.price}>
-              {DUMMY_DATA.price.toLocaleString()} VND
+              {marketData?.price.toLocaleString()} VND
             </Text>
           </View>
-          <Text style={styles.title}>{DUMMY_DATA.product_name}</Text>
+          <Text style={styles.title}>{marketData?.product_name}</Text>
 
           <Text style={styles.title2}>Giới thiệu</Text>
-          <Text style={styles.description}>{DUMMY_DATA.describe}</Text>
+          <Text style={styles.description}>{marketData?.description}</Text>
 
           <View
             style={{
@@ -216,18 +188,14 @@ const PostMarketDetail = () => {
               </TouchableOpacity>
               {showAddressTooltip && (
                 <View style={styles.tooltip}>
-                  <Text style={styles.tooltipText}>
-                    {DUMMY_DATA.seller_address}
-                  </Text>
+                  <Text style={styles.tooltipText}>{marketData?.address}</Text>
                 </View>
               )}
             </View>
           </View>
         </View>
 
-        {DUMMY_DATA.product_type === "koi"
-          ? renderKoiInfo()
-          : renderOtherInfo()}
+        {marketData && renderKoiInfo(marketData.color, marketData.origin)}
 
         <GestureHandlerRootView style={styles.container}>
           <Feedback />

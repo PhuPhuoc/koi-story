@@ -13,6 +13,7 @@ import CommentData from "../../../dummy_data/dummy_comment_consult.json";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import ImageModal from "../../../components/image_modal/image_modal";
 import FeedbackConsult from "../../../components/feedback/feedback_consult";
+import { useAuth } from "../../../context/auth.context";
 
 interface Comment {
   id: number;
@@ -25,6 +26,7 @@ interface Comment {
 const DetailConsult = () => {
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
+
 
   const consult = ConsultData.find((item) => item.id.toString() === id);
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);

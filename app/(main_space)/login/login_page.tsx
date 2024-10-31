@@ -29,7 +29,6 @@ const LoginPage = () => {
 
   const handlePressLogin = async () => {
     await loginWithEmailPassword(email, password);
-    router.push("/(tabs)/blog");
   };
 
   const handleGoogleLogin = () => {
