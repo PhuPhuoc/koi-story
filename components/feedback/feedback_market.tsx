@@ -221,7 +221,7 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = ({post_id}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Đánh giá từ khách hàng</Text>
+      <Text style={styles.header}>Bình luận</Text>
 
       <FlatList data={limitedFeedback} renderItem={renderFeedbackItem} />
 

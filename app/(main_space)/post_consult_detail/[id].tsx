@@ -14,6 +14,7 @@ import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import ImageModal from "../../../components/image_modal/image_modal";
 import FeedbackConsult from "../../../components/feedback/feedback_consult";
 import { useAuth } from "../../../context/auth.context";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface Comment {
   id: number;
@@ -26,7 +27,6 @@ interface Comment {
 const DetailConsult = () => {
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
-
 
   const consult = ConsultData.find((item) => item.id.toString() === id);
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
@@ -75,22 +75,42 @@ const DetailConsult = () => {
             <View style={styles.infoContainer}>
               <View style={styles.nameTopicContainer}>
                 <Text style={styles.name}>{consult.name}</Text>
-                <Text style={styles.topicContainer}>
+                <View style={styles.topicContainer}>
                   <Text style={styles.topicText}>
                     Chủ đề: {consult.post_type}
                   </Text>
-                </Text>
+                </View>
               </View>
               <Text style={styles.date}>Ngày: {consult.created_at}</Text>
             </View>
+          </View>
+          <View style={styles.fengShuiContainer}>
+            <LinearGradient
+              colors={["#FA8BFF", "#2BD2FF", "#2BFF88"]}
+              style={styles.tag}
+            >
+              <Text style={styles.tagText}>Cung phi: {consult.cung_phi}</Text>
+            </LinearGradient>
+            <LinearGradient
+              colors={["#FA8BFF", "#2BD2FF", "#2BFF88"]}
+              style={styles.tag}
+            >
+              <Text style={styles.tagText}>Mệnh: {consult.phase}</Text>
+            </LinearGradient>
+            <LinearGradient
+              colors={["#FA8BFF", "#2BD2FF", "#2BFF88"]}
+              style={styles.tag}
+            >
+              <Text style={styles.tagText}>Hướng hợp: {consult.direction}</Text>
+            </LinearGradient>
           </View>
 
           <Text style={styles.title}>{consult.title}</Text>
 
           <Text style={styles.question}>{consult.question}</Text>
 
-            {/* Horizontal Image Carousel using FlatList */}
-            {consult.image_url && consult.image_url.length > 0 && (
+          {/* Horizontal Image Carousel using FlatList */}
+          {consult.image_url && consult.image_url.length > 0 && (
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -130,7 +150,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    overflow: "scroll"
+    overflow: "scroll",
   },
   containerAll: {
     padding: 16,
@@ -160,19 +180,35 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   topicContainer: {
-    backgroundColor: "#E0F7FA", 
-    borderRadius: 20, 
-    paddingVertical: 5, 
-    paddingHorizontal: 10, 
+    backgroundColor: "#E0F7FA",
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   topicText: {
     color: "#00796B",
     fontSize: 14,
-    fontWeight: "bold", 
+    fontWeight: "bold",
   },
   date: {
     color: "#888",
     fontSize: 14,
+  },
+  fengShuiContainer: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  tag: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    marginRight: 8,
+    alignItems: "center",
+  },
+  tagText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
   },
   title: {
     fontSize: 20,
