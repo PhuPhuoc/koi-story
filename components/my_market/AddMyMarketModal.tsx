@@ -11,143 +11,214 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { THEME_COLOR } from "../../constants/const";
+import { CreateMarket, createMarket } from "../../api/market/market_api";
 
-const AddMyMarket = ({ closeModal }: any) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [images, setImages] = useState<string[]>([
-    "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-    "https://static.vecteezy.com/system/resources/thumbnails/036/053/722/small/ai-generated-cat-wearing-heart-shaped-sunglasses-lying-on-a-pillow-free-photo.jpeg",
-    "https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg",
-  ]);
+interface AddMyMarketProps {
+  closeModal: () => void;
+}
 
-  const [isTitleFocused, setTitleFocused] = useState(false);
-  const [isDescriptionFocused, setDescriptionFocused] = useState(false);
+const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
+  const [formData, setFormData] = useState<CreateMarket>({
+    color: "",
+    description: "",
+    price: 0,
+    origin: "",
+    product_name: "",
+    product_type: "",
+    user_id: "",
+    listImageUrls: [],
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const updateField = (field: keyof CreateMarket, value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: field === 'price' ? Number(value) : value
+    }));
+  };
 
   const handleImagePicker = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissionResult.granted === false) {
-      Alert.alert(
-        "Permission Denied",
-        "Please enable permission to access photos."
-      );
-      return;
-    }
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (!permissionResult.granted) {
+        Alert.alert(
+          "Permission Denied",
+          "Please enable permission to access photos."
+        );
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setImages([...images, result.assets[0].uri]);
+      console.log("Image picker result:", result); // Debug log
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const newImageUri = result.assets[0].uri;
+        console.log("New image URI:", newImageUri); // Debug log
+        
+        setFormData(prev => {
+          const updatedUrls = [...prev.listImageUrls, newImageUri];
+          console.log("Updated image URLs:", updatedUrls); // Debug log
+          return {
+            ...prev,
+            listImageUrls: updatedUrls
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Image picker error:", error); // Debug log
+      Alert.alert("Error", "Failed to pick image. Please try again.");
     }
   };
-
-  // Thêm hàm xóa ảnh
   const handleRemoveImage = (indexToRemove: number) => {
-    setImages(images.filter((_, index) => index !== indexToRemove));
+    setFormData(prev => ({
+      ...prev,
+      listImageUrls: prev.listImageUrls.filter((_, index) => index !== indexToRemove)
+    }));
   };
 
-  const handleSubmit = () => {
-    if (!title || !description || images.length === 0) {
-      Alert.alert("Validation Error", "All fields are required.");
-      return;
+  const validateForm = (): boolean => {
+    console.log("Current form data:", formData); // Debug log
+    console.log("Number of images:", formData.listImageUrls.length); // Debug log
+
+    const requiredFields: (keyof CreateMarket)[] = ["color", "description", "price", "origin", "product_name", "product_type"];
+    
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        Alert.alert("Validation Error", `${field.replace(/_/g, ' ')} is required.`);
+        return false;
+      }
     }
-    closeModal();
+
+    if (!formData.listImageUrls || formData.listImageUrls.length === 0) {
+      Alert.alert("Validation Error", "At least one image is required.");
+      return false;
+    }
+
+    if (isNaN(Number(formData.price)) || Number(formData.price) <= 0) {
+      Alert.alert("Validation Error", "Price must be a valid positive number.");
+      return false;
+    }
+
+    return true;
   };
+
+  const handleSubmit = async () => {
+    console.log("Submitting form with data:", formData); // Debug log
+    
+    if (!validateForm()) return;
+    
+    try {
+      setIsSubmitting(true);
+      
+      const response = await createMarket(formData);
+      
+      if (typeof response === "string") {
+        throw new Error(response);
+      }
+      
+      Alert.alert("Success", "Market post created successfully!");
+      closeModal();
+    } catch (error) {
+      console.error("Submit error:", error); // Debug log
+      Alert.alert("Error", error instanceof Error ? error.message : "Failed to create market post");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.formTitle}>Thêm bài đăng</Text>
-      <Text style={styles.label}>Tên sản phẩm</Text>
-      <TextInput
-        style={[styles.input, isTitleFocused && styles.inputFocused]}
-        placeholder="Nhập tên sản phẩm"
-        value={title}
-        onChangeText={setTitle}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
-      />
+      
+      {/* Form Fields */}
+      <View style={styles.formField}>
+        <Text style={styles.label}>Tên sản phẩm</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Nhập tên sản phẩm"
+          value={formData.product_name}
+          onChangeText={(value) => updateField('product_name', value)}
+        />
+      </View>
 
-      <Text style={styles.label}>Giá</Text>
-      <TextInput
-        style={[styles.input, isTitleFocused && styles.inputFocused]}
-        placeholder="Nhập giá sản phẩm"
-        value={title}
-        onChangeText={setTitle}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
-      />
+      <View style={styles.formField}>
+        <Text style={styles.label}>Giá</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Nhập giá sản phẩm"
+          value={formData.price.toString()}
+          onChangeText={(value) => updateField('price', value)}
+          keyboardType="numeric"
+        />
+      </View>
 
-      <Text style={styles.label}>Địa chỉ người bán</Text>
-      <TextInput
-        style={[styles.input, isTitleFocused && styles.inputFocused]}
-        placeholder="Nhập địa chỉ người bán"
-        value={title}
-        onChangeText={setTitle}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
-      />
+      <View style={styles.formField}>
+        <Text style={styles.label}>Màu sắc</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Nhập màu sắc"
+          value={formData.color}
+          onChangeText={(value) => updateField('color', value)}
+        />
+      </View>
 
-      <Text style={styles.label}>SĐT</Text>
-      <TextInput
-        style={[styles.input, isTitleFocused && styles.inputFocused]}
-        placeholder="Nhập số điện thoại"
-        value={title}
-        onChangeText={setTitle}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
-      />
+      <View style={styles.formField}>
+        <Text style={styles.label}>Loại sản phẩm</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Nhập loại sản phẩm"
+          value={formData.product_type}
+          onChangeText={(value) => updateField('product_type', value)}
+        />
+      </View>
 
-      <Text style={styles.label}>Giá</Text>
-      <TextInput
-        style={[styles.input, isTitleFocused && styles.inputFocused]}
-        placeholder="Nhập giá sản phẩm"
-        value={title}
-        onChangeText={setTitle}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
-      />
+      <View style={styles.formField}>
+        <Text style={styles.label}>Xuất xứ</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Nhập xuất xứ"
+          value={formData.origin}
+          onChangeText={(value) => updateField('origin', value)}
+        />
+      </View>
 
-      <Text style={styles.label}>Loại sản phẩm</Text>
-      <TextInput
-        style={[styles.input, isTitleFocused && styles.inputFocused]}
-        placeholder="Nhập loại sản phẩm"
-        value={title}
-        onChangeText={setTitle}
-        onFocus={() => setTitleFocused(true)}
-        onBlur={() => setTitleFocused(false)}
-      />
+      <View style={styles.formField}>
+        <Text style={styles.label}>Mô tả</Text>
+        <TextInput
+          style={[styles.input, styles.descriptionInput]}
+          placeholder="Nhập mô tả"
+          value={formData.description}
+          onChangeText={(value) => updateField('description', value)}
+          multiline
+          numberOfLines={4}
+        />
+      </View>
 
-      <Text style={styles.label}>Mô tả</Text>
-      <TextInput
-        style={[
-          styles.input,
-          styles.descriptionInput,
-          isDescriptionFocused && styles.inputFocused,
-        ]}
-        placeholder="Nhập mô tả"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-        numberOfLines={4}
-        onFocus={() => setDescriptionFocused(true)}
-        onBlur={() => setDescriptionFocused(false)}
-      />
-
-      <Text style={styles.label}>Hỉnh ảnh</Text>
-      <Pressable style={styles.imagePicker} onPress={handleImagePicker}>
+      <Text style={styles.label}>Hình ảnh</Text>
+      <Pressable 
+        style={[styles.imagePicker, formData.listImageUrls.length === 0 && styles.required]} 
+        onPress={handleImagePicker}
+      >
         <Text style={styles.imagePickerText}>Chọn ảnh</Text>
       </Pressable>
 
       <ScrollView horizontal style={styles.imageList}>
-        {images.map((img, index) => (
+        {formData.listImageUrls.map((img, index) => (
           <View key={index} style={styles.imageContainer}>
-            <Image source={{ uri: img }} style={styles.selectedImage} />
+            <Image 
+              source={{ uri: img }} 
+              style={styles.selectedImage}
+              resizeMode="cover"
+            />
             <Pressable
               style={styles.removeImageButton}
               onPress={() => handleRemoveImage(index)}
@@ -160,14 +231,22 @@ const AddMyMarket = ({ closeModal }: any) => {
 
       <View style={styles.buttonContainer}>
         <Pressable
-          style={[styles.button, styles.submitButton]}
+          style={[
+            styles.button, 
+            styles.submitButton,
+            isSubmitting && styles.disabledButton
+          ]}
           onPress={handleSubmit}
+          disabled={isSubmitting}
         >
-          <Text style={styles.buttonText}>Tạo</Text>
+          <Text style={styles.buttonText}>
+            {isSubmitting ? 'Đang tạo...' : 'Tạo'}
+          </Text>
         </Pressable>
         <Pressable
           style={[styles.button, styles.cancelButton]}
           onPress={closeModal}
+          disabled={isSubmitting}
         >
           <Text style={styles.buttonText}>Hủy</Text>
         </Pressable>
@@ -177,22 +256,28 @@ const AddMyMarket = ({ closeModal }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    padding: 15,
+  },
   formTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 15,
+  },
+  formField: {
     marginBottom: 15,
   },
   input: {
     height: 40,
     borderColor: "#ccc",
     borderWidth: 1,
-    marginBottom: 10,
     paddingHorizontal: 8,
     borderRadius: 15,
   },
-  inputFocused: {
-    borderColor: "#80B3FF",
+  descriptionInput: {
+    height: 80,
+    textAlignVertical: "top",
+    padding: 8,
   },
   label: {
     fontSize: 14,
@@ -200,17 +285,16 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 5,
   },
-  descriptionInput: {
-    height: 80,
-    textAlignVertical: "top",
-    padding: 8,
-  },
   imagePicker: {
     backgroundColor: "#ddd",
     padding: 10,
     borderRadius: 15,
     marginBottom: 10,
     alignItems: "center",
+  },
+  required: {
+    borderWidth: 1,
+    borderColor: 'red',
   },
   imagePickerText: {
     color: "#333",
@@ -229,11 +313,10 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 10,
   },
-  // Style cho nút xóa
   removeImageButton: {
     position: "absolute",
-    top: 0,
-    right: -4,
+    top: -8,
+    right: -8,
     backgroundColor: "#e1e1e1",
     width: 24,
     height: 24,
@@ -241,10 +324,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
   removeImageText: {
     color: "black",
@@ -269,6 +348,9 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     backgroundColor: "#999",
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
   buttonText: {
     color: "#fff",

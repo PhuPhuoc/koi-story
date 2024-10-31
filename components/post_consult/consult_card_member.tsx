@@ -8,7 +8,7 @@ import {
 import { useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons"; 
 import ModalEdit from "../my_consult/modal_edit_consult";
-
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 type Consult = {
   id: number;
   name: string;

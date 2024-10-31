@@ -12,10 +12,12 @@ import {
 import { THEME_COLOR } from "../../../../constants/const";
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import AddMyMarket from "../../../../components/my_market/AddMyMarketModal";
+import { useRouter } from "expo-router";
 
 export default function CreateProductForm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const route = useRouter();
 
   const handleRefresh = async () => {
     setLoading(false);
@@ -40,7 +42,7 @@ export default function CreateProductForm() {
       image: string;
     };
   }) => (
-    <TouchableOpacity style={styles.card} onPress={() => console.log()}>
+    <TouchableOpacity style={styles.card}  onPress={() => route.navigate("post_market_detail/1")}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.artName}>{item.title}</Text>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -14,6 +14,11 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import { THEME_COLOR } from "../../../../constants/const";
 import { useAuth } from "../../../../context/auth.context";
+import {
+  getMarket,
+  MarketData,
+  MarketDataList,
+} from "../../../../api/market/market_api";
 
 const filterOptions = [
   { label: "All", value: "all" },
@@ -28,7 +33,24 @@ const MarketPage = () => {
   const [filteredData, setFilteredData] = useState(dummy);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [loading, setLoading] = useState<boolean>(true);
+  const [marketData, setMarketData] = useState<MarketDataList>();
   const route = useRouter();
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const response = await getMarket();
+        if (typeof response === "object" && response.status === 200) {
+          setMarketData(response.data); // response.data is an array, so set it directly
+        } else {
+          console.error("Unexpected response format:", response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+      }
+    };
+    fetchMarketData();
+  }, []);
 
   const handleRefresh = async () => {
     setLoading(false);
@@ -63,6 +85,11 @@ const MarketPage = () => {
 
     setFilteredData(filtered);
   };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('de-DE').format(price);
+  };
+  
 
   return (
     <View style={styles.mainContainer}>
@@ -104,55 +131,40 @@ const MarketPage = () => {
       </View>
 
       <FlatList
-        data={filteredData}
-        keyExtractor={(item) => item.id.toString()}
+        data={marketData}
+        keyExtractor={(item) => item.post_id.toString()} // Ensure `post_id` is a string
         numColumns={2}
         contentContainerStyle={styles.listContainer}
-        renderItem={({ item }) => {
-          const ribbonText = item.post_type === 1 ? "Tư vấn" : "Hỏi Đáp";
-          const ribbonColor = item.post_type === 1 ? THEME_COLOR : "yellow";
-
-          return (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() => route.navigate("post_market_detail/1")}
-            >
+        onRefresh={handleRefresh}
+        refreshing={loading}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => route.navigate(`post_market_detail/${item.post_id}`)} // Dynamically pass item.post_id
+          >
+            <View>
               <View style={styles.imageContainer}>
                 <View
                   style={[
                     styles.ribbonContainer,
-                    { backgroundColor: ribbonColor },
+                    { backgroundColor: THEME_COLOR },
                   ]}
                 >
-                  <Text style={styles.ribbonText}>{ribbonText}</Text>
+                  <Text style={styles.ribbonText}>{item.product_type}</Text>
                 </View>
                 <Image
-                  source={{ uri: item.image }}
+                  source={{ uri: item.image_url }}
                   style={styles.image}
                   resizeMode="contain"
                 />
               </View>
-
-              <View style={styles.textContainer}>
-                <Text style={styles.artName} numberOfLines={2}>
-                  {item.artName}
-                </Text>
-                <Text style={styles.description} numberOfLines={1}>
-                  {item.description}
-                </Text>
-                <Text style={styles.price}>${item.price}</Text>
+              <View>
+                <Text style={styles.artName}>{item.product_name}</Text>
+                <Text style={styles.price}>{formatPrice(item.price)}đ</Text>
               </View>
-              <View style={styles.timeContainer}>
-                <Entypo name="clock" size={18} />
-                <Text style={styles.timeText} numberOfLines={1}>
-                  {item.created_at}-{item.place}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-        onRefresh={handleRefresh}
-        refreshing={loading}
+            </View>
+          </TouchableOpacity>
+        )}
       />
     </View>
   );

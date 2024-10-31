@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,19 +11,46 @@ import {
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CarouselComponent from "../../../../components/carousel/carousel";
-import GradientText from "../../../../components/gradient_text/gradient_text";
 import { MaterialIcons } from "@expo/vector-icons";
 import { THEME_COLOR } from "../../../../constants/const";
 
 const typeBlog = Array.from(new Set(dummy.map((item) => item.type_blog)));
 
+import { useRouter } from "expo-router";
+import { getCategory } from "../../../../api/blog/blog_api";
+interface CategoryItem {
+  id: string;
+  name: string;
+}
 const BlogPage = () => {
   const [selectedTypeBlog, setSelectedTypeBlog] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [uniqueTitles, setUniqueTitles] = useState<CategoryItem[]>([]);
+  const route = useRouter();
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const response = await getCategory();
+        if (typeof response === "object" && response.status === 200) {
+          const titles = response.data.map((item) => ({
+            id: item.id,
+            name: item.name,
+          }));
+          setUniqueTitles(titles);
+        } else {
+          console.error("Unexpected response format:", response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+      }
+    };
+    fetchMarketData();
+  }, []);
 
   const filteredData = selectedTypeBlog
-    ? dummy.filter((item) => item.type_blog === selectedTypeBlog)
-    : dummy;
+  ? dummy.filter((item) => item.type_blog === selectedTypeBlog)
+  : dummy;
 
   const renderFilterItem = ({ item }: { item: string }) => (
     <TouchableOpacity
@@ -56,7 +83,10 @@ const BlogPage = () => {
       image: string;
     };
   }) => (
-    <TouchableOpacity style={styles.card} onPress={() => console.log()}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => route.navigate("blog_detail/1")}
+    >
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.artName}>{item.title}</Text>
