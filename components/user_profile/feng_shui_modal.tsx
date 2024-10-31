@@ -1,3 +1,4 @@
+import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import {
   View,
@@ -21,6 +22,7 @@ const FengShuiModal: React.FC<FengShuiModalProps> = ({
 }) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
+  const [gender, setGender] = useState(true); 
 
   const handleSave = () => {
     if (selectedYear) {
@@ -40,6 +42,7 @@ const FengShuiModal: React.FC<FengShuiModalProps> = ({
           <Text style={styles.subtitle}>Chọn ngày sinh</Text>
           <View style={styles.scrollContainer}>
             <ScrollView
+              showsVerticalScrollIndicator={false}
               style={styles.scrollView}
               contentContainerStyle={styles.scrollViewContent}
             >
@@ -63,6 +66,17 @@ const FengShuiModal: React.FC<FengShuiModalProps> = ({
                 </TouchableOpacity>
               ))}
             </ScrollView>
+          </View>
+
+          <Text style={styles.subtitle}>Chọn giới tính</Text>
+          <View style={styles.picker}>
+            <Picker
+              selectedValue={gender}
+              onValueChange={(value) => setGender(value)}
+            >
+              <Picker.Item label="Nam" value={true} />
+              <Picker.Item label="Nữ" value={false} />
+            </Picker>
           </View>
 
           <View style={styles.buttonContainer}>
@@ -109,13 +123,19 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    textAlign: "center",
-    marginBottom: 10,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "gray",
+  },
+  picker: {
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   scrollContainer: {
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#ccc",
+    marginBottom: 20,
   },
   scrollView: {
     maxHeight: 200,
@@ -135,7 +155,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#CDC1FF",
     width: "100%",
     alignItems: "center",
-    borderRadius: 10,
   },
   yearText: {
     fontSize: 16,
@@ -148,6 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 10,
+    marginTop: 15,
   },
   button: {
     flex: 1,
@@ -168,7 +188,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
 });
 

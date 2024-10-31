@@ -142,7 +142,9 @@ const UserProfileScreen = () => {
                 </View>
               </View>
             </View>
+            
             <UserFengShui openModal={openModal} />
+
             <View style={{ padding: 20, marginBottom: 90 }}>
               <TouchableOpacity style={styles.button} onPress={handleLogOut}>
                 <Text style={styles.buttonText}>
