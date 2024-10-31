@@ -11,7 +11,6 @@ import {
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CarouselComponent from "../../../../components/carousel/carousel";
-import GradientText from "../../../../components/gradient_text/gradient_text";
 import { MaterialIcons } from "@expo/vector-icons";
 import { THEME_COLOR } from "../../../../constants/const";
 

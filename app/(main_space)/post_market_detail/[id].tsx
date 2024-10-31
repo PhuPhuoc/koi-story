@@ -35,7 +35,7 @@ const PostMarketDetail = () => {
   useEffect(() => {
     const fetchMarketData = async () => {
       try {
-        const response = await getMarketDetailById(dummyId);
+        const response = await getMarketDetailById(id as string);
 
         if (typeof response === "object" && response.status === 200) {
           setMarketData(response.data);
@@ -48,7 +48,7 @@ const PostMarketDetail = () => {
       }
     };
     fetchMarketData();
-  }, []);
+  }, [id]);
 
   const handlePressIn = () => {
     setShowAddressTooltip(true);
@@ -198,7 +198,7 @@ const PostMarketDetail = () => {
         {marketData && renderKoiInfo(marketData.color, marketData.origin)}
 
         <GestureHandlerRootView style={styles.container}>
-          <Feedback/>
+          <Feedback post_id={id as string} />
         </GestureHandlerRootView>
       </ScrollView>
     </View>

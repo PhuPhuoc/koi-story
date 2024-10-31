@@ -1,0 +1,103 @@
+[
+    {
+      "id": 1,
+      "product_name": "Classic Leather Wallet",
+      "price": 49.99,
+      "product_type": "Accessories",
+      "color": "Brown",
+      "origin": "Italy",
+      "describe": "A handcrafted leather wallet with multiple compartments for cards and cash.",
+      "image": "https://example.com/images/classic-leather-wallet.jpg"
+    },
+    {
+      "id": 2,
+      "product_name": "Wireless Earbuds",
+      "price": 79.99,
+      "product_type": "Electronics",
+      "color": "Black",
+      "origin": "China",
+      "describe": "High-quality wireless earbuds with noise cancellation and long battery life.",
+      "image": "https://example.com/images/wireless-earbuds.jpg"
+    },
+    {
+      "id": 3,
+      "product_name": "Organic Cotton T-shirt",
+      "price": 25.0,
+      "product_type": "Clothing",
+      "color": "White",
+      "origin": "USA",
+      "describe": "A soft and breathable organic cotton T-shirt, perfect for everyday wear.",
+      "image": "https://example.com/images/organic-cotton-tshirt.jpg"
+    },
+    {
+      "id": 4,
+      "product_name": "Ceramic Coffee Mug",
+      "price": 15.99,
+      "product_type": "Kitchenware",
+      "color": "Blue",
+      "origin": "Japan",
+      "describe": "A beautifully crafted ceramic mug, ideal for coffee or tea lovers.",
+      "image": "https://example.com/images/ceramic-coffee-mug.jpg"
+    },
+    {
+      "id": 5,
+      "product_name": "Running Sneakers",
+      "price": 120.0,
+      "product_type": "Footwear",
+      "color": "Gray",
+      "origin": "Germany",
+      "describe": "Lightweight and comfortable sneakers designed for long-distance running.",
+      "image": "https://example.com/images/running-sneakers.jpg"
+    },
+    {
+      "id": 6,
+      "product_name": "Smart Watch",
+      "price": 199.99,
+      "product_type": "Electronics",
+      "color": "Silver",
+      "origin": "South Korea",
+      "describe": "A smart watch with multiple health tracking features and customizable watch faces.",
+      "image": "https://example.com/images/smart-watch.jpg"
+    },
+    {
+      "id": 7,
+      "product_name": "Bamboo Sunglasses",
+      "price": 29.99,
+      "product_type": "Accessories",
+      "color": "Natural Bamboo",
+      "origin": "Thailand",
+      "describe": "Eco-friendly sunglasses made from bamboo, with UV protection lenses.",
+      "image": "https://example.com/images/bamboo-sunglasses.jpg"
+    },
+    {
+      "id": 8,
+      "product_name": "Stainless Steel Water Bottle",
+      "price": 18.0,
+      "product_type": "Outdoor",
+      "color": "Green",
+      "origin": "Sweden",
+      "describe": "Insulated water bottle that keeps drinks hot or cold for hours.",
+      "image": "https://example.com/images/stainless-steel-water-bottle.jpg"
+    },
+    {
+      "id": 9,
+      "product_name": "Desk Lamp",
+      "price": 45.5,
+      "product_type": "Home Decor",
+      "color": "Black",
+      "origin": "India",
+      "describe": "A modern desk lamp with adjustable brightness, perfect for study or work.",
+      "image": "https://example.com/images/desk-lamp.jpg"
+    },
+    {
+      "id": 10,
+      "product_name": "Yoga Mat",
+      "price": 30.0,
+      "product_type": "Fitness",
+      "color": "Purple",
+      "origin": "Canada",
+      "describe": "Non-slip yoga mat made from eco-friendly materials for a comfortable workout.",
+      "image": "https://example.com/images/yoga-mat.jpg"
+    }
+  ]
+  
