@@ -47,7 +47,6 @@ const AddMyMarket = ({ closeModal }: any) => {
     }
   };
 
-  // Thêm hàm xóa ảnh
   const handleRemoveImage = (indexToRemove: number) => {
     setImages(images.filter((_, index) => index !== indexToRemove));
   };

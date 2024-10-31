@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,27 +11,53 @@ import {
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CarouselComponent from "../../../../components/carousel/carousel";
-import GradientText from "../../../../components/gradient_text/gradient_text";
 import { MaterialIcons } from "@expo/vector-icons";
 import { THEME_COLOR } from "../../../../constants/const";
-
-const uniqueTitles = Array.from(new Set(dummy.map((item) => item.title)));
-
+import { useRouter } from "expo-router";
+import { getCategory } from "../../../../api/blog/blog_api";
+interface CategoryItem {
+  id: string;
+  name: string;
+}
 const BlogPage = () => {
   const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [uniqueTitles, setUniqueTitles] = useState<CategoryItem[]>([]);
+  const route = useRouter();
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+        const response = await getCategory();
+        if (typeof response === "object" && response.status === 200) {
+          const titles = response.data.map((item) => ({
+            id: item.id,
+            name: item.name,
+          }));
+          setUniqueTitles(titles);
+        } else {
+          console.error("Unexpected response format:", response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+      }
+    };
+    fetchMarketData();
+  }, []);
 
   const filteredData = selectedTitle
     ? dummy.filter((item) => item.title === selectedTitle)
     : dummy;
 
-  const renderFilterItem = ({ item }: { item: string }) => (
+  const renderFilterItem = ({ item }: { item: CategoryItem }) => (
     <TouchableOpacity
       style={[
         styles.filterCard,
-        selectedTitle === item && styles.selectedFilterCard,
+        selectedTitle === item.id && styles.selectedFilterCard,
       ]}
-      onPress={() => setSelectedTitle(item === selectedTitle ? null : item)}
+      onPress={() =>
+        setSelectedTitle(item.id === selectedTitle ? null : item.id)
+      }
     >
       <MaterialIcons
         name="filter-list"
@@ -40,7 +66,7 @@ const BlogPage = () => {
         style={styles.icon}
       />
       <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">
-        {item}
+        {item.name}
       </Text>
     </TouchableOpacity>
   );
@@ -56,7 +82,10 @@ const BlogPage = () => {
       image: string;
     };
   }) => (
-    <TouchableOpacity style={styles.card} onPress={() => console.log()}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => route.navigate("blog_detail/1")}
+    >
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.artName}>{item.title}</Text>
@@ -88,7 +117,7 @@ const BlogPage = () => {
         <FlatList
           data={uniqueTitles}
           renderItem={renderFilterItem}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.filterContainer}

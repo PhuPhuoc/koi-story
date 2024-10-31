@@ -2,7 +2,6 @@ import {
   Text,
   Image,
   StyleSheet,
-  ScrollView,
   View,
   FlatList,
   TouchableOpacity,
@@ -10,7 +9,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import DUMMY_DATA from "../../../dummy_data/dummy_market_detail.json";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -36,7 +34,6 @@ const PostMarketDetail = () => {
     const fetchMarketData = async () => {
       try {
         const response = await getMarketDetailById(dummyId);
-
         if (typeof response === "object" && response.status === 200) {
           setMarketData(response.data);
           setSelectedImage(response.data.ListImage[0]?.image_url || "");
@@ -50,20 +47,13 @@ const PostMarketDetail = () => {
     fetchMarketData();
   }, []);
 
-  const handlePressIn = () => {
-    setShowAddressTooltip(true);
-  };
-
-  const handlePressOut = () => {
-    setShowAddressTooltip(false);
-  };
-
-  const handleImagePress = (image: string) => {
-    setSelectedImage(image);
-  };
-
+  const handlePressIn = () => setShowAddressTooltip(true);
+  const handlePressOut = () => setShowAddressTooltip(false);
+  const handleImagePress = (image: string) => setSelectedImage(image);
   const handlePhonePress = () => {
-    Linking.openURL(`tel:${marketData?.phone_number}`);
+    if (marketData?.phone_number) {
+      Linking.openURL(`tel:${marketData.phone_number}`);
+    }
   };
 
   const renderKoiInfo = (color: string, origin: string) => (
@@ -87,125 +77,126 @@ const PostMarketDetail = () => {
     </View>
   );
 
+  const renderHeader = () => (
+    <>
+      <TouchableOpacity style={styles.backButton} onPress={() => route.back()}>
+        <AntDesign name="left" size={24} color="black" />
+      </TouchableOpacity>
+
+      <View style={styles.imageContainer}>
+        <Image
+          resizeMode="contain"
+          style={styles.mainImage}
+          source={{ uri: selectedImage }}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={styles.likeButton}
+        onPress={() => setLiked(!liked)}
+      >
+        {liked ? (
+          <AntDesign name="heart" size={24} color="red" />
+        ) : (
+          <AntDesign name="hearto" size={24} color="red" />
+        )}
+      </TouchableOpacity>
+
+      <FlatList
+        horizontal
+        data={marketData?.ListImage}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => handleImagePress(item.image_url)}
+            style={[
+              styles.thumbnailContainer,
+              selectedImage === item.image_url &&
+                styles.selectedThumbnailContainer,
+            ]}
+          >
+            <Image
+              resizeMode="contain"
+              style={styles.thumbnail}
+              source={{ uri: item.image_url }}
+            />
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.thumbnailList}
+      />
+
+      <View style={styles.infoContainer}>
+        <View style={styles.headerRow}>
+          <View style={styles.typeChip}>
+            <FontAwesome5 name="fish" size={20} color="white" />
+            <Text style={styles.typeText}>{marketData?.product_type}</Text>
+          </View>
+          <Text style={styles.price}>
+            {marketData?.price.toLocaleString()} VND
+          </Text>
+        </View>
+        <Text style={styles.title}>{marketData?.product_name}</Text>
+
+        <Text style={styles.title2}>Giới thiệu</Text>
+        <Text style={styles.description}>{marketData?.description}</Text>
+
+        <View style={styles.actionContainer}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handlePhonePress}>
+              <Feather name="phone-call" size={20} color="#FFFFFF" />
+              <Text style={styles.buttonText}>GỌI ĐIỆN</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.addressContainer}>
+            <TouchableOpacity
+              style={styles.circularIconBackground}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+            >
+              <FontAwesome name="map-marker" size={32} color="white" />
+            </TouchableOpacity>
+            {showAddressTooltip && (
+              <View style={styles.tooltip}>
+                <Text style={styles.tooltipText}>{marketData?.address}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </View>
+
+      {marketData && renderKoiInfo(marketData.color, marketData.origin)}
+
+      <GestureHandlerRootView style={styles.container}>
+        <Feedback />
+      </GestureHandlerRootView>
+    </>
+  );
+
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <Stack.Screen options={{ headerShown: false }} />
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => route.back()}
-        >
-          <AntDesign name="left" size={24} color="black" />
-        </TouchableOpacity>
-
-        <View style={styles.imageContainer}>
-          <Image
-            resizeMode="contain"
-            style={styles.mainImage}
-            source={{ uri: selectedImage }}
-          />
-        </View>
-        <TouchableOpacity
-          style={styles.likeButton}
-          onPress={() => setLiked(!liked)}
-        >
-          {liked ? (
-            <AntDesign name="heart" size={24} color="red" />
-          ) : (
-            <AntDesign name="hearto" size={24} color="red" />
-          )}
-        </TouchableOpacity>
-
-        <FlatList
-          data={marketData?.ListImage}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleImagePress(item.image_url)}
-              style={[
-                styles.thumbnailContainer,
-                selectedImage === item.image_url &&
-                  styles.selectedThumbnailContainer,
-              ]}
-            >
-              <Image
-                resizeMode="contain"
-                style={styles.thumbnail}
-                source={{ uri: item.image_url }}
-              />
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.thumbnailList}
-        />
-
-        <View style={styles.infoContainer}>
-          <View
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "row",
-            }}
-          >
-            <View style={styles.typeChip}>
-              <FontAwesome5 name="fish" size={20} color="white" />
-              <Text style={styles.typeText}>{marketData?.product_type}</Text>
-            </View>
-            <Text style={styles.price}>
-              {marketData?.price.toLocaleString()} VND
-            </Text>
-          </View>
-          <Text style={styles.title}>{marketData?.product_name}</Text>
-
-          <Text style={styles.title2}>Giới thiệu</Text>
-          <Text style={styles.description}>{marketData?.description}</Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handlePhonePress}
-              >
-                <Feather name="phone-call" size={20} color="#FFFFFF" />
-                <Text style={styles.buttonText}>GỌI ĐIỆN</Text>
-              </TouchableOpacity>
-            </View>
-            
-            <View style={styles.addressContainer}>
-              <TouchableOpacity
-                style={styles.circularIconBackground}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-              >
-                <FontAwesome name="map-marker" size={32} color="white" />
-              </TouchableOpacity>
-              {showAddressTooltip && (
-                <View style={styles.tooltip}>
-                  <Text style={styles.tooltipText}>{marketData?.address}</Text>
-                </View>
-              )}
-            </View>
-          </View>
-        </View>
-
-        {marketData && renderKoiInfo(marketData.color, marketData.origin)}
-
-        <GestureHandlerRootView style={styles.container}>
-          <Feedback/>
-        </GestureHandlerRootView>
-      </ScrollView>
+      <Stack.Screen options={{ headerShown: false }} />
+      <FlatList
+        data={[{ key: "content" }]}
+        renderItem={() => renderHeader()}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  actionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
