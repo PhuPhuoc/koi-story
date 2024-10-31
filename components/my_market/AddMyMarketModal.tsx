@@ -8,96 +8,106 @@ import {
   TextInput,
   View,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { THEME_COLOR } from "../../constants/const";
 import { CreateMarket, createMarket } from "../../api/market/market_api";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../firebaseConfig";
+import { useAuth } from "../../context/auth.context";
+import { Picker } from "@react-native-picker/picker";
 
+const uploadImageToFirebase = async (uri: string) => {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const filename = `images/${Date.now()}_${uri.split("/").pop()}`;
+    const storageRef = ref(storage, filename);
+
+    await uploadBytes(storageRef, blob);
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null;
+  }
+};
 interface AddMyMarketProps {
   closeModal: () => void;
 }
 
 const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
+  const { userData } = useAuth();
   const [formData, setFormData] = useState<CreateMarket>({
     color: "",
     description: "",
     price: 0,
     origin: "",
     product_name: "",
-    product_type: "",
+    product_type: "koi",
     user_id: "",
     listImageUrls: [],
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
 
   const updateField = (field: keyof CreateMarket, value: string | number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: field === 'price' ? Number(value) : value
+      [field]: field === "price" ? Number(value) : value,
     }));
   };
 
   const handleImagePicker = async () => {
-    try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
-      if (!permissionResult.granted) {
-        Alert.alert(
-          "Permission Denied",
-          "Please enable permission to access photos."
-        );
-        return;
-      }
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert(
+        "Permission Denied",
+        "Please enable permission to access photos."
+      );
+      return;
+    }
 
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-      console.log("Image picker result:", result); // Debug log
-
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const newImageUri = result.assets[0].uri;
-        console.log("New image URI:", newImageUri); // Debug log
-        
-        setFormData(prev => {
-          const updatedUrls = [...prev.listImageUrls, newImageUri];
-          console.log("Updated image URLs:", updatedUrls); // Debug log
-          return {
-            ...prev,
-            listImageUrls: updatedUrls
-          };
-        });
-      }
-    } catch (error) {
-      console.error("Image picker error:", error); // Debug log
-      Alert.alert("Error", "Failed to pick image. Please try again.");
+    if (!result.canceled) {
+      setImages([...images, result.assets[0].uri]);
     }
   };
+
   const handleRemoveImage = (indexToRemove: number) => {
-    setFormData(prev => ({
-      ...prev,
-      listImageUrls: prev.listImageUrls.filter((_, index) => index !== indexToRemove)
-    }));
+    setImages(images.filter((_, index) => index !== indexToRemove));
   };
 
   const validateForm = (): boolean => {
-    console.log("Current form data:", formData); // Debug log
-    console.log("Number of images:", formData.listImageUrls.length); // Debug log
+    const requiredFields: (keyof CreateMarket)[] = [
+      "color",
+      "description",
+      "price",
+      "origin",
+      "product_name",
+      "product_type",
+    ];
 
-    const requiredFields: (keyof CreateMarket)[] = ["color", "description", "price", "origin", "product_name", "product_type"];
-    
     for (const field of requiredFields) {
       if (!formData[field]) {
-        Alert.alert("Validation Error", `${field.replace(/_/g, ' ')} is required.`);
+        Alert.alert(
+          "Validation Error",
+          `${field.replace(/_/g, " ")} is required.`
+        );
         return false;
       }
     }
 
-    if (!formData.listImageUrls || formData.listImageUrls.length === 0) {
+    if (images.length === 0) {
       Alert.alert("Validation Error", "At least one image is required.");
       return false;
     }
@@ -111,34 +121,44 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
   };
 
   const handleSubmit = async () => {
-    console.log("Submitting form with data:", formData); // Debug log
-    
+    console.log("Submitting form with data:", formData);
+
     if (!validateForm()) return;
-    
+
     try {
       setIsSubmitting(true);
-      
+      formData.listImageUrls = [];
+
+      for (const image of images) {
+        const url = await uploadImageToFirebase(image);
+        if (url) {
+          formData.listImageUrls.push(url);
+        } else {
+          Alert.alert("Upload Error", "Failed to upload some images.");
+        }
+      }
+
+      formData.user_id = userData?.id ?? "";
       const response = await createMarket(formData);
-      
       if (typeof response === "string") {
         throw new Error(response);
       }
-      
       Alert.alert("Success", "Market post created successfully!");
       closeModal();
     } catch (error) {
-      console.error("Submit error:", error); // Debug log
-      Alert.alert("Error", error instanceof Error ? error.message : "Failed to create market post");
+      Alert.alert(
+        "Error",
+        error instanceof Error ? error.message : "Failed to create market post"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.formTitle}>Thêm bài đăng</Text>
-      
+
       {/* Form Fields */}
       <View style={styles.formField}>
         <Text style={styles.label}>Tên sản phẩm</Text>
@@ -146,7 +166,7 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
           style={styles.input}
           placeholder="Nhập tên sản phẩm"
           value={formData.product_name}
-          onChangeText={(value) => updateField('product_name', value)}
+          onChangeText={(value) => updateField("product_name", value)}
         />
       </View>
 
@@ -156,7 +176,7 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
           style={styles.input}
           placeholder="Nhập giá sản phẩm"
           value={formData.price.toString()}
-          onChangeText={(value) => updateField('price', value)}
+          onChangeText={(value) => updateField("price", value)}
           keyboardType="numeric"
         />
       </View>
@@ -167,18 +187,23 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
           style={styles.input}
           placeholder="Nhập màu sắc"
           value={formData.color}
-          onChangeText={(value) => updateField('color', value)}
+          onChangeText={(value) => updateField("color", value)}
         />
       </View>
 
       <View style={styles.formField}>
         <Text style={styles.label}>Loại sản phẩm</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Nhập loại sản phẩm"
-          value={formData.product_type}
-          onChangeText={(value) => updateField('product_type', value)}
-        />
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={formData.product_type}
+            onValueChange={(value) => updateField("product_type", value)}
+            style={styles.picker}
+          >
+            <Picker.Item label="Koi" value="koi" />
+            <Picker.Item label="Decoration" value="decoration" />
+            <Picker.Item label="Other" value="other" />
+          </Picker>
+        </View>
       </View>
 
       <View style={styles.formField}>
@@ -187,7 +212,7 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
           style={styles.input}
           placeholder="Nhập xuất xứ"
           value={formData.origin}
-          onChangeText={(value) => updateField('origin', value)}
+          onChangeText={(value) => updateField("origin", value)}
         />
       </View>
 
@@ -197,28 +222,27 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
           style={[styles.input, styles.descriptionInput]}
           placeholder="Nhập mô tả"
           value={formData.description}
-          onChangeText={(value) => updateField('description', value)}
+          onChangeText={(value) => updateField("description", value)}
           multiline
           numberOfLines={4}
         />
       </View>
 
       <Text style={styles.label}>Hình ảnh</Text>
-      <Pressable 
-        style={[styles.imagePicker, formData.listImageUrls.length === 0 && styles.required]} 
+      <Pressable
+        style={[
+          styles.imagePicker,
+          formData.listImageUrls.length === 0 && styles.required,
+        ]}
         onPress={handleImagePicker}
       >
         <Text style={styles.imagePickerText}>Chọn ảnh</Text>
       </Pressable>
 
       <ScrollView horizontal style={styles.imageList}>
-        {formData.listImageUrls.map((img, index) => (
+        {images.map((img, index) => (
           <View key={index} style={styles.imageContainer}>
-            <Image 
-              source={{ uri: img }} 
-              style={styles.selectedImage}
-              resizeMode="cover"
-            />
+            <Image source={{ uri: img }} style={styles.selectedImage} />
             <Pressable
               style={styles.removeImageButton}
               onPress={() => handleRemoveImage(index)}
@@ -232,16 +256,20 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
       <View style={styles.buttonContainer}>
         <Pressable
           style={[
-            styles.button, 
+            styles.button,
             styles.submitButton,
-            isSubmitting && styles.disabledButton
+            isSubmitting && styles.disabledButton,
           ]}
           onPress={handleSubmit}
           disabled={isSubmitting}
         >
-          <Text style={styles.buttonText}>
-            {isSubmitting ? 'Đang tạo...' : 'Tạo'}
-          </Text>
+          {isSubmitting ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>
+              Tạo
+            </Text>
+          )}
         </Pressable>
         <Pressable
           style={[styles.button, styles.cancelButton]}
@@ -256,6 +284,18 @@ const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
 };
 
 const styles = StyleSheet.create({
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 15,
+    height: 40,
+    overflow: "hidden",
+    justifyContent: "center",
+  },
+  picker: {
+    fontSize: 14,
+    height: 40,
+  },
   container: {
     padding: 15,
   },
@@ -294,7 +334,7 @@ const styles = StyleSheet.create({
   },
   required: {
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: "red",
   },
   imagePickerText: {
     color: "#333",
@@ -335,6 +375,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 15,
+    marginBottom: 50,
   },
   button: {
     flex: 1,
