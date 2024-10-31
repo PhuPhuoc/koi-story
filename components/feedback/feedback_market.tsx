@@ -22,7 +22,8 @@ interface FeedbackMarketProps {
   post_id: string;
 }
 
-const FeedbackMarket: React.FC<FeedbackMarketProps> = (post_id:string) => {
+const FeedbackMarket: React.FC<FeedbackMarketProps> = ({post_id}) => {
+
   const [modalVisible, setModalVisible] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
@@ -31,7 +32,7 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = (post_id:string) => {
   const fetchComments = async () => {
     try {
       const response = await fetch(
-        "http://api.koistory.site/api/v1/posts/4955380d-b21f-4de5-8f1d-d1c775294909/comments"
+        `http://api.koistory.site/api/v1/posts/${post_id}/comments`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -63,7 +64,7 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = (post_id:string) => {
   const handleAddComment = async (user_id: string) => {
     if (newComment.trim()) {
       const response = await fetch(
-        "http://api.koistory.site/api/v1/posts/4955380d-b21f-4de5-8f1d-d1c775294909/comments",
+        `http://api.koistory.site/api/v1/posts/${post_id}/comments`,
         {
           method: "POST",
           headers: {
@@ -220,7 +221,7 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = (post_id:string) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Đánh giá từ khách hàng</Text>
+      <Text style={styles.header}>Bình luận</Text>
 
       <FlatList data={limitedFeedback} renderItem={renderFeedbackItem} />
 

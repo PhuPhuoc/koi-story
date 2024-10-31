@@ -13,6 +13,9 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CarouselComponent from "../../../../components/carousel/carousel";
 import { MaterialIcons } from "@expo/vector-icons";
 import { THEME_COLOR } from "../../../../constants/const";
+
+const typeBlog = Array.from(new Set(dummy.map((item) => item.type_blog)));
+
 import { useRouter } from "expo-router";
 import { getCategory } from "../../../../api/blog/blog_api";
 interface CategoryItem {
@@ -20,7 +23,7 @@ interface CategoryItem {
   name: string;
 }
 const BlogPage = () => {
-  const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
+  const [selectedTypeBlog, setSelectedTypeBlog] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [uniqueTitles, setUniqueTitles] = useState<CategoryItem[]>([]);
   const route = useRouter();
@@ -45,19 +48,17 @@ const BlogPage = () => {
     fetchMarketData();
   }, []);
 
-  const filteredData = selectedTitle
-    ? dummy.filter((item) => item.title === selectedTitle)
-    : dummy;
+  const filteredData = selectedTypeBlog
+  ? dummy.filter((item) => item.type_blog === selectedTypeBlog)
+  : dummy;
 
-  const renderFilterItem = ({ item }: { item: CategoryItem }) => (
+  const renderFilterItem = ({ item }: { item: string }) => (
     <TouchableOpacity
       style={[
         styles.filterCard,
-        selectedTitle === item.id && styles.selectedFilterCard,
+        selectedTypeBlog === item && styles.selectedFilterCard,
       ]}
-      onPress={() =>
-        setSelectedTitle(item.id === selectedTitle ? null : item.id)
-      }
+      onPress={() => setSelectedTypeBlog(item === selectedTypeBlog ? null : item)}
     >
       <MaterialIcons
         name="filter-list"
@@ -66,7 +67,7 @@ const BlogPage = () => {
         style={styles.icon}
       />
       <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">
-        {item.name}
+        {item}
       </Text>
     </TouchableOpacity>
   );
@@ -89,7 +90,7 @@ const BlogPage = () => {
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.artName}>{item.title}</Text>
-        <Text>{item.author}</Text>
+        <Text style={styles.author}>{item.author}</Text>
         <Text style={styles.description} numberOfLines={2}>
           {item.content}
         </Text>
@@ -103,7 +104,7 @@ const BlogPage = () => {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.titleContainer}>
           <Text style={styles.title1}>Tư vấn cá Koi phong thuỷ</Text>
         </View>
@@ -115,9 +116,9 @@ const BlogPage = () => {
         <CarouselComponent />
 
         <FlatList
-          data={uniqueTitles}
+          data={typeBlog}
           renderItem={renderFilterItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.filterContainer}
@@ -133,6 +134,7 @@ const BlogPage = () => {
           refreshing={loading}
         />
       </ScrollView>
+      
     </GestureHandlerRootView>
   );
 };
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   container: {
-    padding: 20,
+    padding: 10,
     paddingBottom: 100,
   },
   card: {
@@ -168,7 +170,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  author: {
+    marginTop: 5,
+    fontSize: 15,
+  },
   description: {
+    marginTop: 5,
     fontSize: 14,
     color: "#666",
   },
@@ -204,7 +211,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: "white",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 5,

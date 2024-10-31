@@ -169,20 +169,10 @@ const PostMarketDetail = () => {
 
       {marketData && renderKoiInfo(marketData.color, marketData.origin)}
 
-      <GestureHandlerRootView style={styles.container}>
-        <Feedback post_id={id as string}  />
-      </GestureHandlerRootView>
-    </>
-  );
-
-  return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ headerShown: false }} />
-      <FlatList
-        data={[{ key: "content" }]}
-        renderItem={() => renderHeader()}
-        showsVerticalScrollIndicator={false}
-      />
+        <GestureHandlerRootView style={styles.container}>
+          <Feedback post_id={dummyId}/>
+        </GestureHandlerRootView>
+      </ScrollView>
     </View>
   );
 };

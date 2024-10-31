@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { THEME_COLOR } from "../../constants/const";
@@ -16,20 +17,17 @@ import { storage } from "../../firebaseConfig";
 
 const uploadImageToFirebase = async (uri: string) => {
   try {
-    // Fetch the image as a blob
     const response = await fetch(uri);
     const blob = await response.blob();
-    const filename = `images/${Date.now()}_${uri.split("/").pop()}`; // Create a unique filename
+    const filename = `images/${Date.now()}_${uri.split("/").pop()}`;
     const storageRef = ref(storage, filename);
 
-    // Upload the image
     await uploadBytes(storageRef, blob);
-    // Retrieve the download URL
     const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL; // Return the URL
+    return downloadURL;
   } catch (error) {
     console.error("Error uploading image:", error);
-    return null; // Return null if an error occurs
+    return null;
   }
 };
 
@@ -38,6 +36,7 @@ const AddConsult = ({ closeModal }: any) => {
   const [description, setDescription] = useState("");
   const [question, setQuestion] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleImagePicker = async () => {
     const permissionResult =
@@ -71,7 +70,7 @@ const AddConsult = ({ closeModal }: any) => {
       Alert.alert("Validation Error", "All fields are required.");
       return;
     }
-
+    setLoading(true);
     const imageUrls: string[] = [];
     for (const image of images) {
       const url = await uploadImageToFirebase(image);
@@ -83,7 +82,7 @@ const AddConsult = ({ closeModal }: any) => {
     }
 
     console.log("Uploaded Image URLs:", imageUrls);
-
+    setLoading(false);
     closeModal();
   };
 
@@ -141,7 +140,11 @@ const AddConsult = ({ closeModal }: any) => {
           style={[styles.button, styles.submitButton]}
           onPress={handleSubmit}
         >
-          <Text style={styles.buttonText}>Tạo</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Tạo</Text>
+          )}
         </Pressable>
         <Pressable
           style={[styles.button, styles.cancelButton]}
