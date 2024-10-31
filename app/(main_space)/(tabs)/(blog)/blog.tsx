@@ -15,23 +15,23 @@ import GradientText from "../../../../components/gradient_text/gradient_text";
 import { MaterialIcons } from "@expo/vector-icons";
 import { THEME_COLOR } from "../../../../constants/const";
 
-const uniqueTitles = Array.from(new Set(dummy.map((item) => item.title)));
+const typeBlog = Array.from(new Set(dummy.map((item) => item.type_blog)));
 
 const BlogPage = () => {
-  const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
+  const [selectedTypeBlog, setSelectedTypeBlog] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const filteredData = selectedTitle
-    ? dummy.filter((item) => item.title === selectedTitle)
+  const filteredData = selectedTypeBlog
+    ? dummy.filter((item) => item.type_blog === selectedTypeBlog)
     : dummy;
 
   const renderFilterItem = ({ item }: { item: string }) => (
     <TouchableOpacity
       style={[
         styles.filterCard,
-        selectedTitle === item && styles.selectedFilterCard,
+        selectedTypeBlog === item && styles.selectedFilterCard,
       ]}
-      onPress={() => setSelectedTitle(item === selectedTitle ? null : item)}
+      onPress={() => setSelectedTypeBlog(item === selectedTypeBlog ? null : item)}
     >
       <MaterialIcons
         name="filter-list"
@@ -60,7 +60,7 @@ const BlogPage = () => {
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.artName}>{item.title}</Text>
-        <Text>{item.author}</Text>
+        <Text style={styles.author}>{item.author}</Text>
         <Text style={styles.description} numberOfLines={2}>
           {item.content}
         </Text>
@@ -74,7 +74,7 @@ const BlogPage = () => {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.titleContainer}>
           <Text style={styles.title1}>Tư vấn cá Koi phong thuỷ</Text>
         </View>
@@ -86,7 +86,7 @@ const BlogPage = () => {
         <CarouselComponent />
 
         <FlatList
-          data={uniqueTitles}
+          data={typeBlog}
           renderItem={renderFilterItem}
           keyExtractor={(item) => item}
           horizontal
@@ -104,6 +104,7 @@ const BlogPage = () => {
           refreshing={loading}
         />
       </ScrollView>
+      
     </GestureHandlerRootView>
   );
 };
@@ -139,7 +140,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  author: {
+    marginTop: 5,
+    fontSize: 15,
+  },
   description: {
+    marginTop: 5,
     fontSize: 14,
     color: "#666",
   },
@@ -175,7 +181,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: "white",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 5,

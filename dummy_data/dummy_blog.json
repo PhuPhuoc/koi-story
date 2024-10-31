@@ -1,23 +1,27 @@
 [
-    {
-        "id": 1,
-        "title": "Blog 1",
-        "author": "Author 1",
-        "image": "https://m.media-amazon.com/images/I/71yL1rYRRGL._SX522_.jpg",
-        "content": "This is the content of Blog 1"
-    },
-    {
-        "id": 2,
-        "title": "Blog 2",
-        "author": "Author 1",
-        "image": "https://m.media-amazon.com/images/I/71yL1rYRRGL._SX522_.jpg",
-        "content": "This is the content of Blog 2"
-    },
-    {
-        "id": 3,
-        "title": "Blog 3",
-        "author": "Author 2",
-        "image": "https://m.media-amazon.com/images/I/71yL1rYRRGL._SX522_.jpg",
-        "content": "This is the content of Blog 3"
-    }
+  {
+    "id": 1,
+    "title": "Giống cá Taisho Sanke phù hợp cho người mệnh Kim",
+    "type_blog": "Cá koi",
+    "author": "Nhân Tâm",
+    "image": "https://as1.ftcdn.net/v2/jpg/00/35/74/96/1000_F_35749632_qlKXr4JhhK8SD6YZQuMcjgNFsbGAluKR.jpg",
+    "content": "Cá Koi Taisho Sanke là một trong những loại cá Koi phổ biến và được yêu thích trong phong thủy, đặc biệt là với người mệnh Kim. Giống cá này có màu sắc nổi bật với thân màu trắng, kết hợp các vệt đỏ và đen, mang đến sự hài hòa và may mắn. Đối với người mệnh Kim, nuôi cá Taisho Sanke không chỉ giúp tạo cảnh quan đẹp mà còn giúp thu hút tài lộc và thúc đẩy vận may. Để cá phát triển tốt, cần chú ý đến chất lượng nước và chế độ dinh dưỡng hợp lý."
+  },
+  {
+    "id": 2,
+    "title": "Cách xây dựng hồ cá lý tưởng trong không gian nhà",
+    "author": "Phủ Phước",
+    "type_blog": "Hồ cá",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJukvqmJ5_7GmnatQAi3IVZjClR_6hk1YTiw&s",
+    "content": "Xây dựng hồ cá tại nhà không chỉ giúp nâng cao cảnh quan mà còn mang lại không gian thư giãn cho gia đình. Để có một hồ cá lý tưởng, bạn cần chọn vị trí đặt hồ hợp phong thủy, như ở phía Đông hoặc Đông Nam, nơi tượng trưng cho sự phát triển. Ngoài ra, hãy lưu ý đến việc lắp đặt hệ thống lọc nước và đảm bảo nhiệt độ nước ổn định để cá có môi trường sống tốt nhất. Bố trí cây thủy sinh hoặc đá trong hồ cũng giúp tạo vẻ tự nhiên và giúp duy trì hệ sinh thái trong hồ."
+  },
+  {
+    "id": 3,
+    "title": "Top các loại cây kiểng dễ trồng cho người mới bắt đầu",
+    "type_blog": "Cây kiểng",
+    "author": "Hoàng Danh",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqeBFlgFIsasseZkEXpdSXdYP3bWWk3OEIIQ&s",
+    "content": "Cây kiểng là lựa chọn hoàn hảo để trang trí không gian sống, đặc biệt cho những người yêu thiên nhiên. Một số loại cây dễ trồng, ít cần chăm sóc như cây lưỡi hổ, trầu bà, hay cây kim ngân, rất phù hợp cho người mới bắt đầu. Những cây này không chỉ giúp thanh lọc không khí mà còn tạo cảm giác thư thái, giúp giảm căng thẳng. Việc chăm sóc cây cũng giúp bạn rèn luyện sự kiên nhẫn và yêu thương thiên nhiên."
+  }
 ]
+
