@@ -24,7 +24,7 @@ export default function CreateProductForm() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const route = useRouter();
-  const [marketData, setMarketData] = useState<MyMarketData>();
+  const [marketData, setMarketData] = useState<MyMarketData[]>();
   const user_id = useAuth().userData?.id ?? "";
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function CreateProductForm() {
               <View>
                 <Text style={styles.artName}>{item.product_name}</Text>
                 <View style={styles.priceContainer}>
-                  <Text style={styles.price}>{item.price}đ</Text>
+                  <Text style={styles.price}>{item.price.toLocaleString()}đ</Text>
                   <TouchableOpacity
                     style={styles.editButton} // Use the new style here
                     onPress={() => openEditModal(item.post_id)} // Pass item.post_id to openEditModal
@@ -124,7 +124,7 @@ export default function CreateProductForm() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <AddMyMarket closeModal={closeModal} />
+                <AddMyMarket  closeModal={closeModal} onUpdate={fetchMarketData}/>
           </View>
         </View>
       </Modal>
@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     padding: 6,
     justifyContent: "flex-end",
     alignItems: "center",
-    marginLeft: 200, 
     borderRadius: 8,
   },
   editButtonText: {
@@ -170,8 +169,10 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     marginTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center', // Aligns items vertically in the center
+    flexDirection: "row",
+    alignItems: "center", 
+    justifyContent: "space-between",
+    // Aligns items vertically in the center
   },
   listContentContainer: {
     paddingBottom: 100,
@@ -289,9 +290,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   price: {
-    fontSize: 16,
+    fontSize: 20,
     color: "#888",
     marginVertical: 5,
+    fontWeight: "bold",
   },
   description: {
     fontSize: 14,

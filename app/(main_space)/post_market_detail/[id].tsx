@@ -40,7 +40,6 @@ const PostMarketDetail = () => {
     const fetchMarketData = async () => {
       try {
         const response = await getMarketDetailById(id as string);
-
         if (typeof response === "object" && response.status === 200) {
           setMarketData(response.data);
           setSelectedImage(response.data.ListImage[0]?.image_url || "");

@@ -35,9 +35,11 @@ const uploadImageToFirebase = async (uri: string) => {
 };
 interface AddMyMarketProps {
   closeModal: () => void;
+  onUpdate: () => void;
+
 }
 
-const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal }) => {
+const AddMyMarket: React.FC<AddMyMarketProps> = ({ closeModal,onUpdate }) => {
   const { userData } = useAuth();
   const [formData, setFormData] = useState<CreateMarket>({
     color: "",

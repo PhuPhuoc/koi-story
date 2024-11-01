@@ -64,7 +64,7 @@ interface ApiResponse {
 interface ApiResponseGetMarket {
   status: number;
   message: string;
-  data: MarketDataList;
+  data: MarketDataList[];
 }
 interface ApiResponseCreateMarket {
   status: number;
@@ -79,7 +79,7 @@ interface ApiResponseUpdateMarket {
 interface ApiResponseMyMarket {
   status: number;
   message: string;
-  data: MyMarketData;
+  data: MyMarketData[];
 }
 
 interface ApiResponseImage {

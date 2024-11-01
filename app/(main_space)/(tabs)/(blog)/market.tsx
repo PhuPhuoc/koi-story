@@ -22,18 +22,16 @@ import {
 
 const filterOptions = [
   { label: "All", value: "all" },
-  { label: "Tư vấn", value: "tuvan" },
-  { label: "Hỏi Đáp", value: "hoidap" },
-  { label: "Under $50", value: "under50" },
-  { label: "Above $50", value: "above50" },
+  { label: "Koi", value: "koi" },
+  { label: "Decoration", value: "decoration" },
 ];
 
 const MarketPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState(dummy);
+  const [filteredData, setFilteredData] = useState<MarketDataList[]>();
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [loading, setLoading] = useState<boolean>(true);
-  const [marketData, setMarketData] = useState<MarketDataList>();
+  const [marketData, setMarketData] = useState<MarketDataList[]>();
   const route = useRouter();
 
   useEffect(() => {
@@ -41,7 +39,8 @@ const MarketPage = () => {
       try {
         const response = await getMarket();
         if (typeof response === "object" && response.status === 200) {
-          setMarketData(response.data); // response.data is an array, so set it directly
+          setMarketData(response.data);
+          setFilteredData(response.data);
         } else {
           console.error("Unexpected response format:", response);
         }
@@ -67,24 +66,19 @@ const MarketPage = () => {
   };
 
   const applyFilters = (text: string, filterValue: string) => {
-    let filtered = dummy.filter((item) =>
-      item.artName.toLowerCase().includes(text.toLowerCase())
-    );
-
+    // Filter by product_name based on search text
+    let filtered = marketData?.filter((item) =>
+      item.product_name.toLowerCase().includes(text.toLowerCase())
+    ) || [];
+  
+    // Apply filter by product_type if not set to "all"
     if (filterValue !== "all") {
-      if (filterValue === "tuvan") {
-        filtered = filtered.filter((item) => item.post_type === 1);
-      } else if (filterValue === "hoidap") {
-        filtered = filtered.filter((item) => item.post_type === 2);
-      } else if (filterValue === "under50") {
-        filtered = filtered.filter((item) => item.price < 50);
-      } else if (filterValue === "above50") {
-        filtered = filtered.filter((item) => item.price >= 50);
-      }
+      filtered = filtered.filter((item) => item.product_type === filterValue);
     }
-
+  
     setFilteredData(filtered);
   };
+  
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('de-DE').format(price);
@@ -131,41 +125,42 @@ const MarketPage = () => {
       </View>
 
       <FlatList
-        data={marketData}
-        keyExtractor={(item) => item.post_id.toString()} // Ensure `post_id` is a string
-        numColumns={2}
-        contentContainerStyle={styles.listContainer}
-        onRefresh={handleRefresh}
-        refreshing={loading}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => route.navigate(`post_market_detail/${item.post_id}`)} // Dynamically pass item.post_id
-          >
-            <View>
-              <View style={styles.imageContainer}>
-                <View
-                  style={[
-                    styles.ribbonContainer,
-                    { backgroundColor: THEME_COLOR },
-                  ]}
-                >
-                  <Text style={styles.ribbonText}>{item.product_type}</Text>
-                </View>
-                <Image
-                  source={{ uri: item.image_url }}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
+      data={filteredData}
+      keyExtractor={(item) => item.post_id.toString()}
+      numColumns={2}
+      contentContainerStyle={styles.listContainer}
+      onRefresh={handleRefresh}
+      refreshing={loading}
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => route.navigate(`post_market_detail/${item.post_id}`)}
+        >
+          <View>
+            <View style={styles.imageContainer}>
+              <View
+                style={[
+                  styles.ribbonContainer,
+                  { backgroundColor: THEME_COLOR },
+                ]}
+              >
+                <Text style={styles.ribbonText}>{item.product_type}</Text>
               </View>
-              <View>
-                <Text style={styles.artName}>{item.product_name}</Text>
-                <Text style={styles.price}>{formatPrice(item.price)}đ</Text>
-              </View>
+              <Image
+                source={{ uri: item.image_url }}
+                style={styles.image}
+                resizeMode="contain"
+              />
             </View>
-          </TouchableOpacity>
-        )}
-      />
+            <View>
+              <Text style={styles.artName}>{item.product_name}</Text>
+              <Text style={styles.price}>{formatPrice(item.price)}đ</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
+    
     </View>
   );
 };
