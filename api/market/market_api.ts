@@ -43,7 +43,6 @@ export interface UpdateMarket{
   product_name: string;
   product_type: string;
 }
-
 export interface MyMarketData {
   post_id: string;
   product_name: string;
@@ -51,6 +50,10 @@ export interface MyMarketData {
   product_type: string;
   image_url: string;
 }
+export interface ImageData {
+  image_url: string;
+}
+
 
 
 interface ApiResponse {
@@ -77,6 +80,11 @@ interface ApiResponseMyMarket {
   status: number;
   message: string;
   data: MyMarketData;
+}
+
+interface ApiResponseImage {
+  status: number;
+  message: string;
 }
 
 
@@ -147,6 +155,50 @@ export const getMyMarket = async (user_id: string): Promise<ApiResponseMyMarket|
     return "Error deleting market data";
   }
 };
+
+export const sendImage = async (id: string ,data: ImageData): Promise<ApiResponseImage | string> => {
+  try {
+    const response = await axios.post<ApiResponseImage>(
+      `${API_URL}/posts/${id}/images`,
+      data
+    );
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      const { data } = error.response;
+      const message = data.error || "An error occurred while creating the market post.";
+      
+      const errorDetails = `${message}`;
+      return errorDetails;
+    } else {
+      console.error("Unexpected error:", error);
+      return "Unexpected error occurred while creating the market post.";
+    }
+  }
+};
+
+export const deleteImage = async (id: string): Promise<ApiResponseImage | string> => {
+  try {
+    const response = await axios.delete<ApiResponseImage>(
+      `${API_URL}/images/${id}`,
+{}
+    );
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      const { data } = error.response;
+      const message = data.error || "An error occurred while creating the market post.";
+      
+      const errorDetails = `${message}`;
+      return errorDetails;
+    } else {
+      console.error("Unexpected error:", error);
+      return "Unexpected error occurred while creating the market post.";
+    }
+  }
+};
+
+
 
 
 

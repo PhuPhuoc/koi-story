@@ -35,7 +35,6 @@ const DetailPage = () => {
           img {
             width: 100%;  
             height: auto;
-            max-height: 500px;
             border-radius: 25px; 
             margin: 10px auto; 
             display: block;
@@ -46,39 +45,7 @@ const DetailPage = () => {
         </style>
       </head>
       <body>
-        <h1>The Importance of Good Typography</h1>
-        <p>
-          Typography plays a crucial role in design, affecting readability and user experience. A well-chosen typeface can convey a brand's personality, while poor typography can detract from even the best design. In this blog post, we will explore various typefaces and their impact on communication.
-        </p>
-        <img src="${link}" alt="Typography" />
-        
-        <h2>Color Theory in Design</h2>
-        <p>
-          Understanding color theory is essential for any designer. Colors evoke emotions and can influence decision-making. This post discusses how to choose color palettes that resonate with your target audience and create visually appealing designs.
-        </p>
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvEYnxugqvXMcuXWmIxP5OfhtSMyJFjno0Tg&s" alt="Color Theory" />
-        
-        <h2>Designing for User Experience</h2>
-        <p>
-          User experience (UX) is at the heart of successful design. This blog post will delve into the principles of UX design and how to create intuitive interfaces that enhance user satisfaction. We will also share some best practices to keep in mind when designing for usability.
-        </p>
-        <img src="https://i.pinimg.com/236x/81/63/78/81637861f1566bb718979b454ce94eed.jpg" alt="User Experience" />
-        
-        <h2>The Impact of Visual Hierarchy</h2>
-        <p>
-          Visual hierarchy is crucial in guiding users through content. This entry explores how to structure content effectively to improve user comprehension and engagement.
-        </p>
-        <img src="https://i.pinimg.com/236x/46/45/43/464543d7ee4269313c8b72b9816dfa69.jpg" alt="Visual Hierarchy" />
-        
-        <h2>Exploring Minimalist Design</h2>
-        <p>
-          Minimalism in design emphasizes simplicity and clarity. This blog discusses the principles of minimalist design and how to apply them to create clean and effective interfaces.
-        </p>
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdPRkX-LWJF5Q20yssHr3JXaaleTHe-MHprA&s" alt="Minimalist Design" />
-        
-        <p class="bottom">
-          Enjoy our insights into design and creativity through these blog posts. Thank you for reading!
-        </p>
+        <h2><strong>Sell Koi</strong></h2><p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p><p><img src="https://firebasestorage.googleapis.com/v0/b/nextbean-b48cc.appspot.com/o/admin%2FA.jpg?alt=media&amp;token=a943c9ba-bcf0-446b-b047-80902b11bdd2"></p><h2><strong>Description</strong></h2><p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<img src="https://firebasestorage.googleapis.com/v0/b/nextbean-b48cc.appspot.com/o/admin%2Fbackground_login.png?alt=media&amp;token=cd9ea7da-fd26-4ea1-b723-b30647f7db95"></p>
       </body>
     </html>
   `);

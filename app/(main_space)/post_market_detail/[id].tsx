@@ -98,17 +98,6 @@ const PostMarketDetail = () => {
         />
       </Pressable>
 
-      <TouchableOpacity
-        style={styles.likeButton}
-        onPress={() => setLiked(!liked)}
-      >
-        {liked ? (
-          <AntDesign name="heart" size={24} color="red" />
-        ) : (
-          <AntDesign name="hearto" size={24} color="red" />
-        )}
-      </TouchableOpacity>
-
       <FlatList
         horizontal
         data={marketData?.ListImage}
@@ -176,10 +165,6 @@ const PostMarketDetail = () => {
       {marketData && renderKoiInfo(marketData.color, marketData.origin)}
 
       <GestureHandlerRootView style={styles.container}>
-<<<<<<< HEAD
-        <Feedback post_id={dummyId}  />
-      </GestureHandlerRootView>
-=======
         <Feedback post_id={id as string} />
       </GestureHandlerRootView>
       <ImageModal
@@ -187,7 +172,6 @@ const PostMarketDetail = () => {
         image_url={selectedImage ?? ""}
         onClose={() => setImageModalVisible(false)}
       />
->>>>>>> b7e428baf034568798bfd9ad320c8f28f70184c7
     </>
   );
 
