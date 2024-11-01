@@ -36,7 +36,6 @@ interface ErrorResponse {
 type AuthResponse = LoginResponse | ErrorResponse;
 type RegisterSellerResponse = SellerRegistrationResponse | ErrorResponse;
 
-
 export const LoginWithEmailPassword = async (
   email: string,
   password: string
