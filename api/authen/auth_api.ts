@@ -142,6 +142,7 @@ export const getSellers = async (
     );
 
     return response.data;
+    
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       return {

@@ -132,7 +132,7 @@ const MarketPage = () => {
 
       <FlatList
         data={marketData}
-        keyExtractor={(item) => item.post_id.toString()} // Ensure `post_id` is a string
+        keyExtractor={(item) => item.post_id.toString()} 
         numColumns={2}
         contentContainerStyle={styles.listContainer}
         onRefresh={handleRefresh}
@@ -140,7 +140,7 @@ const MarketPage = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => route.navigate(`post_market_detail/${item.post_id}`)} // Dynamically pass item.post_id
+            onPress={() => route.navigate(`post_market_detail/${item.post_id}`)} 
           >
             <View>
               <View style={styles.imageContainer}>

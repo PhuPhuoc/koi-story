@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useAuth } from "../../context/auth.context";
 
 interface FeedbackMarket {
   id: string;
@@ -16,6 +17,7 @@ interface FeedbackMarket {
   created_at: string;
   content: string;
   avatar: string;
+  user_id: string;
 }
 
 interface CommentModalProps {
@@ -25,7 +27,7 @@ interface CommentModalProps {
   renderFeedbackItem: (item: { item: FeedbackMarket }) => JSX.Element;
   newComment: string;
   setNewComment: (comment: string) => void;
-  handleAddComment: (user_id: string) => void;
+  handleAddComment: (user_id: string | undefined) => void;
   editingCommentId: string | null;
   setEditingCommentId: (id: string | null) => void;
   handleEditComment: (comment_id: string, content: string) => void;
@@ -43,7 +45,7 @@ const CommentMarket: React.FC<CommentModalProps> = ({
   setEditingCommentId,
   handleEditComment,
 }) => {
-  const userId = "e752aff2-d424-4423-96a9-63a6f8072104";
+  const { userData } = useAuth();
 
   return (
     <Modal visible={visible} animationType="slide">
@@ -75,16 +77,16 @@ const CommentMarket: React.FC<CommentModalProps> = ({
             <Pressable
               onPress={() => {
                 handleEditComment(editingCommentId, newComment);
-                setEditingCommentId(null); 
-                setNewComment(""); 
+                setEditingCommentId(null);
+                setNewComment("");
               }}
-              style={styles.saveButton}
+              style={styles.sendButton}
             >
-              <Text style={styles.saveButtonText}>Lưu</Text>
+              <MaterialCommunityIcons name="send" size={24} color="#000" />
             </Pressable>
           ) : (
             <Pressable
-              onPress={() => handleAddComment(userId)}
+              onPress={() => handleAddComment(userData?.id)}
               style={styles.sendButton}
             >
               <MaterialCommunityIcons name="send" size={24} color="#000" />

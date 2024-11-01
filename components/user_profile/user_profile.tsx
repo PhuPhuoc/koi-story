@@ -15,6 +15,7 @@ import UserFengShui from "./user_feng_shui";
 import FengShuiModal from "./feng_shui_modal";
 import { router } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useAuth } from "../../context/auth.context";
 interface UserProfile {
   id: number;
   display_name: string;
@@ -40,6 +41,8 @@ const UserProfileScreen = () => {
     }
     router.replace("/");
   };
+
+  const { userData } = useAuth();
 
   const [yearOfBirth, setYearOfBirth] = useState<number | null>(null);
 
@@ -116,12 +119,12 @@ const UserProfileScreen = () => {
                 />
                 <View style={{ flex: 1, alignItems: "center" }}>
                   <Image
-                    source={{ uri: profile_picture_url }}
+                    source={{ uri: userData?.avatar }}
                     style={styles.profileImage}
                   />
                 </View>
               </View>
-              <Text style={styles.name}>{display_name}</Text>
+              <Text style={styles.name}>{userData?.user_name}</Text>
               <Text style={styles.userType}>{user_type}</Text>
               <View style={styles.row}>
                 <View style={[styles.ageChip, { backgroundColor: "#00E5EE" }]}>
