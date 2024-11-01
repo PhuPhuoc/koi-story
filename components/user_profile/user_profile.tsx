@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import UserFengShui from "./user_feng_shui";
 import FengShuiModal from "./feng_shui_modal";
 import { router } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useAuth } from "../../context/auth.context";
 interface UserProfile {
   id: number;
   display_name: string;
@@ -25,14 +26,17 @@ interface UserProfile {
   feng_shui: string;
 }
 
+interface Data {
+  year_of_birth: number;
+  element: string;
+  direction: string;
+  cung_phi: string;
+}
+
 const UserProfileScreen = () => {
-  const {
-    display_name,
-    profile_picture_url,
-    user_type,
-    year_of_birth,
-    feng_shui,
-  } = dataProfile as UserProfile;
+  const { profile_picture_url, year_of_birth, feng_shui } =
+    dataProfile as UserProfile;
+  const { userData } = useAuth();
 
   const handleLogOut = () => {
     while (router.canGoBack()) {
@@ -41,43 +45,37 @@ const UserProfileScreen = () => {
     router.replace("/");
   };
 
-  const [yearOfBirth, setYearOfBirth] = useState<number | null>(null);
-
   const [modalVisible, setModalVisible] = useState(false);
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-  const saveYearOfBirth = (year: number) => {
-    setYearOfBirth(year);
-  };
-
   const getFengShuiStyles = (fengShuiElement: string) => {
     switch (fengShuiElement) {
-      case "Wood":
+      case "Mộc":
         return {
           backgroundColor: "#4CAF50",
           icon: "tree",
           text: "Mộc",
         };
-      case "Fire":
+      case "Hỏa":
         return {
           backgroundColor: "#FF5722",
           icon: "fire",
           text: "Hỏa",
         };
-      case "Earth":
+      case "Thổ":
         return {
           backgroundColor: "#795548",
           icon: "globe",
           text: "Thổ",
         };
-      case "Metal":
+      case "Kim":
         return {
           backgroundColor: "#9E9E9E",
           icon: "circle",
           text: "Kim",
         };
-      case "Water":
+      case "Thuỷ":
         return {
           backgroundColor: "#2196F3",
           icon: "water",
@@ -92,7 +90,30 @@ const UserProfileScreen = () => {
     }
   };
 
-  const fengShuiStyle = getFengShuiStyles(feng_shui);
+  const [fengShuiData, setFengShuiData] = useState<Data>();
+  const fengShuiStyle = getFengShuiStyles(fengShuiData?.element || "Unknown");
+
+  useEffect(() => {
+    const fetchFengShuiData = async () => {
+      try {
+        const response = await fetch(
+          `http://api.koistory.site/api/v1/fates/user/${userData?.id}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setFengShuiData(data.data);
+        } else {
+          console.error("Failed to fetch Feng Shui data");
+        }
+      } catch (error) {
+        console.error("Error fetching Feng Shui data:", error);
+      }
+    };
+
+    if (userData?.id) {
+      fetchFengShuiData();
+    }
+  }, [userData?.id]);
 
   return (
     <ImageBackground
@@ -121,11 +142,13 @@ const UserProfileScreen = () => {
                   />
                 </View>
               </View>
-              <Text style={styles.name}>{display_name}</Text>
-              <Text style={styles.userType}>{user_type}</Text>
+              <Text style={styles.name}>{userData?.user_name}</Text>
+              <Text style={styles.userType}>{userData?.role}</Text>
               <View style={styles.row}>
                 <View style={[styles.ageChip, { backgroundColor: "#00E5EE" }]}>
-                  <Text style={styles.ageText}>Sinh năm: {year_of_birth}</Text>
+                  <Text style={styles.ageText}>
+                    Sinh năm: {fengShuiData?.year_of_birth}
+                  </Text>
                 </View>
                 <View
                   style={[
@@ -140,15 +163,40 @@ const UserProfileScreen = () => {
                   />
                   <Text style={styles.typeText}>{fengShuiStyle.text}</Text>
                 </View>
+                <View
+                  style={[
+                    styles.ageChip,
+                    { backgroundColor: "#789DBC", marginLeft: 10 },
+                  ]}
+                >
+                  <Text style={styles.ageText}>
+                    Cung: {fengShuiData?.cung_phi}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={[
+                  styles.ageChip,
+                  { backgroundColor: "#A594F9", marginLeft: 10,marginBottom:10 },
+                ]}
+              >
+                <Text style={styles.ageText}>
+                  Hướng: {fengShuiData?.direction}
+                </Text>
               </View>
             </View>
-            
+
             <UserFengShui openModal={openModal} />
 
             <View style={{ padding: 20, marginBottom: 90 }}>
               <TouchableOpacity style={styles.button} onPress={handleLogOut}>
                 <Text style={styles.buttonText}>
-                  <Entypo name="log-out" size={24} color="white" style={{alignItems:"center"}} />{" "}
+                  <Entypo
+                    name="log-out"
+                    size={24}
+                    color="white"
+                    style={{ alignItems: "center" }}
+                  />{" "}
                   ĐĂNG XUẤT
                 </Text>
               </TouchableOpacity>
@@ -157,11 +205,7 @@ const UserProfileScreen = () => {
         )}
         keyExtractor={(item) => item.key}
       />
-      <FengShuiModal
-        visible={modalVisible}
-        onClose={closeModal}
-        onSave={saveYearOfBirth}
-      />
+      <FengShuiModal visible={modalVisible} onClose={closeModal} />
     </ImageBackground>
   );
 };

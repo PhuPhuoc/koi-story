@@ -8,26 +8,47 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { useAuth } from "../../context/auth.context";
 
 interface FengShuiModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (yearOfBirth: number) => void;
 }
 
-const FengShuiModal: React.FC<FengShuiModalProps> = ({
-  visible,
-  onClose,
-  onSave,
-}) => {
+const FengShuiModal: React.FC<FengShuiModalProps> = ({ visible, onClose }) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
-  const [gender, setGender] = useState(true); 
+  const [gender, setGender] = useState("male");
+  const { userData } = useAuth();
+  const handleSave = async () => {
+    const user_id = userData?.id;
+    if (!user_id || !selectedYear) {
+      return;
+    }
+    try {
+      const response = await fetch(
+        "http://api.koistory.site/api/v1/fates/user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user_id,
+            year_of_birth: selectedYear,
+            gender: gender,
+          }),
+        }
+      );
 
-  const handleSave = () => {
-    if (selectedYear) {
-      onSave(selectedYear);
-      onClose();
+      const result = await response.json();
+      if (response.ok) {
+        onClose();
+      } else {
+        console.error("Server Error:", result);
+      }
+    } catch (error) {
+      console.error("Request Error:", error);
     }
   };
 
@@ -74,8 +95,8 @@ const FengShuiModal: React.FC<FengShuiModalProps> = ({
               selectedValue={gender}
               onValueChange={(value) => setGender(value)}
             >
-              <Picker.Item label="Nam" value={true} />
-              <Picker.Item label="Nữ" value={false} />
+              <Picker.Item label="Nam" value="male" />
+              <Picker.Item label="Nữ" value="female" />
             </Picker>
           </View>
 
