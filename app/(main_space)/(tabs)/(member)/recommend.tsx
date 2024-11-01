@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,29 +11,56 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import dummy from "../../../../dummy_data/dummy_blog.json";
 import CarouselComponent from "../../../../components/carousel/carousel";
+import { useAuth } from "../../../../context/auth.context";
+import { useRouter } from "expo-router";
 
 const Recommend = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [data, setData] = useState();
+  const { userData } = useAuth();
+  const route = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://api.koistory.site/api/v1/post-blog/recommend/${userData?.id}`
+        );
+        const result = await response.json();
+        setData(result.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [userData?.id]);
 
   const renderItem = ({
     item,
   }: {
     item: {
-      id: number;
+      post_id: string;
       title: string;
-      author: string;
-      content: string;
+      author_name: string;
       image: string;
     };
   }) => (
-    <TouchableOpacity style={styles.card} onPress={() => console.log()}>
-      <Image source={{ uri: item.image }} style={styles.image} />
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => route.navigate(`blog_detail/${item.post_id}`)}
+    >
+      <Image
+        source={{
+          uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_sJtZ9r_VRYrLeAxARsC5icePZPNBZnv-4w&s",
+        }}
+        style={styles.image}
+      />
       <View style={styles.textContainer}>
         <Text style={styles.artName}>{item.title}</Text>
-        <Text>{item.author}</Text>
-        <Text style={styles.description} numberOfLines={2}>
-          {item.content}
-        </Text>
+        <Text style={styles.author}>{item.author_name}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -55,9 +82,9 @@ const Recommend = () => {
 
         <CarouselComponent />
         <FlatList
-          data={dummy}
+          data={data}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.post_id}
           scrollEnabled={false}
           contentContainerStyle={styles.container}
           onRefresh={handleRefresh}
@@ -121,6 +148,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  author: {
+    marginTop: 5,
+    fontSize: 15,
   },
 });
 export default Recommend;
