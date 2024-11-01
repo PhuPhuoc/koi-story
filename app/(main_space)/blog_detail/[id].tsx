@@ -58,8 +58,6 @@ const DetailPage = () => {
           }
           img {
             width: 100%;  
-            height: auto;
-            max-height: 500px;
             border-radius: 25px; 
             margin: 10px auto; 
             display: block;

@@ -98,17 +98,6 @@ const PostMarketDetail = () => {
         />
       </Pressable>
 
-      <TouchableOpacity
-        style={styles.likeButton}
-        onPress={() => setLiked(!liked)}
-      >
-        {liked ? (
-          <AntDesign name="heart" size={24} color="red" />
-        ) : (
-          <AntDesign name="hearto" size={24} color="red" />
-        )}
-      </TouchableOpacity>
-
       <FlatList
         horizontal
         data={marketData?.ListImage}

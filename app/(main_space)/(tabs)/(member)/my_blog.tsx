@@ -15,29 +15,34 @@ import AddMyMarket from "../../../../components/my_market/AddMyMarketModal";
 import { useRouter } from "expo-router";
 import { getMyMarket, MyMarketData } from "../../../../api/market/market_api";
 import { useAuth } from "../../../../context/auth.context";
+import EditMyMarket from "../../../../components/my_market/EditMyMarketModal";
 
 export default function CreateProductForm() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalEditVisible, setIsModalEditVisible] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+
   const [loading, setLoading] = useState<boolean>(true);
   const route = useRouter();
   const [marketData, setMarketData] = useState<MyMarketData>();
   const user_id = useAuth().userData?.id ?? "";
 
   useEffect(() => {
-    const fetchMarketData = async () => {
-      try {
-        const response = await getMyMarket(user_id);
-        if (typeof response === "object" && response.status === 200) {
-          setMarketData(response.data); 
-        } else {
-          console.error("Unexpected response format:", response);
-        }
-      } catch (error) {
-        console.error("Failed to fetch market data:", error);
-      }
-    };
     fetchMarketData();
   }, []);
+
+  const fetchMarketData = async () => {
+    try {
+      const response = await getMyMarket(user_id);
+      if (typeof response === "object" && response.status === 200) {
+        setMarketData(response.data);
+      } else {
+        console.error("Unexpected response format:", response);
+      }
+    } catch (error) {
+      console.error("Failed to fetch market data:", error);
+    }
+  };
 
   const handleRefresh = async () => {
     setLoading(false);
@@ -51,18 +56,28 @@ export default function CreateProductForm() {
     setIsModalVisible(false);
   };
 
+  const openEditModal = (postId: string) => {
+    setSelectedPostId(postId); // Set the selected post_id here
+    setIsModalEditVisible(true);
+  };
+
+  const closeEditModal = () => {
+    setIsModalEditVisible(false);
+    setSelectedPostId(null); // Reset selected post_id when modal is closed
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
         data={marketData}
-        keyExtractor={(item) => item.post_id.toString()} // Ensure `post_id` is a string
+        keyExtractor={(item) => item.post_id.toString()}
         contentContainerStyle={styles.listContainer}
         onRefresh={handleRefresh}
         refreshing={loading}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => route.navigate(`post_market_detail/${item.post_id}`)} // Dynamically pass item.post_id
+            onPress={() => route.navigate(`post_market_detail/${item.post_id}`)}
           >
             <View>
               <View style={styles.imageContainer}>
@@ -82,7 +97,15 @@ export default function CreateProductForm() {
               </View>
               <View>
                 <Text style={styles.artName}>{item.product_name}</Text>
-                <Text style={styles.price}>{(item.price)}đ</Text>
+                <View style={styles.priceContainer}>
+                  <Text style={styles.price}>{item.price}đ</Text>
+                  <TouchableOpacity
+                    style={styles.editButton} // Use the new style here
+                    onPress={() => openEditModal(item.post_id)} // Pass item.post_id to openEditModal
+                  >
+                    <Text style={styles.editButtonText}>Chỉnh sửa</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </TouchableOpacity>
@@ -101,7 +124,26 @@ export default function CreateProductForm() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <AddMyMarket closeModal={() => setIsModalVisible(false)} />
+            <AddMyMarket closeModal={closeModal} />
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalEditVisible}
+        onRequestClose={closeEditModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {selectedPostId && (
+              <EditMyMarket
+                postId={selectedPostId}
+                closeModal={closeEditModal}
+                onUpdate={fetchMarketData}
+              />
+            )}
           </View>
         </View>
       </Modal>
@@ -112,6 +154,24 @@ export default function CreateProductForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  editButton: {
+    backgroundColor: THEME_COLOR,
+    padding: 6,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginLeft: 200, 
+    borderRadius: 8,
+  },
+  editButtonText: {
+    color: "#fff", // Text color
+    fontSize: 16, // Font size for the button text
+    fontWeight: "bold",
+  },
+  priceContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center', // Aligns items vertically in the center
   },
   listContentContainer: {
     paddingBottom: 100,
@@ -255,8 +315,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 24,
     borderTopRightRadius: 8,
     zIndex: 1,
   },
