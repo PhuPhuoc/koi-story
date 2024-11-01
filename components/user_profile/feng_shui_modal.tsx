@@ -13,9 +13,10 @@ import { useAuth } from "../../context/auth.context";
 interface FengShuiModalProps {
   visible: boolean;
   onClose: () => void;
+  onSave: () => void;
 }
 
-const FengShuiModal: React.FC<FengShuiModalProps> = ({ visible, onClose }) => {
+const FengShuiModal: React.FC<FengShuiModalProps> = ({ visible, onClose,onSave }) => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(currentYear);
   const [gender, setGender] = useState("male");
@@ -44,6 +45,7 @@ const FengShuiModal: React.FC<FengShuiModalProps> = ({ visible, onClose }) => {
       const result = await response.json();
       if (response.ok) {
         onClose();
+        onSave();
       } else {
         console.error("Server Error:", result);
       }

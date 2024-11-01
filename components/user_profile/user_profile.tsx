@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -34,8 +34,7 @@ interface Data {
 }
 
 const UserProfileScreen = () => {
-  const { profile_picture_url, year_of_birth, feng_shui } =
-    dataProfile as UserProfile;
+  const { profile_picture_url } = dataProfile as UserProfile;
   const { userData } = useAuth();
 
   const handleLogOut = () => {
@@ -91,28 +90,28 @@ const UserProfileScreen = () => {
   };
 
   const [fengShuiData, setFengShuiData] = useState<Data>();
+
   const fengShuiStyle = getFengShuiStyles(fengShuiData?.element || "Unknown");
+  const refreshData = async () => {
+    if (!userData?.id) return;
 
-  useEffect(() => {
-    const fetchFengShuiData = async () => {
-      try {
-        const response = await fetch(
-          `http://api.koistory.site/api/v1/fates/user/${userData?.id}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setFengShuiData(data.data);
-        } else {
-          console.error("Failed to fetch Feng Shui data");
-        }
-      } catch (error) {
-        console.error("Error fetching Feng Shui data:", error);
+    try {
+      const response = await fetch(
+        `http://api.koistory.site/api/v1/fates/user/${userData?.id}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setFengShuiData(data.data);
+      } else {
+        console.error("Failed to fetch Feng Shui data");
       }
-    };
-
-    if (userData?.id) {
-      fetchFengShuiData();
+    } catch (error) {
+      console.error("Error fetching Feng Shui data:", error);
     }
+  };
+
+  useLayoutEffect(() => {
+    refreshData();
   }, [userData?.id]);
 
   return (
@@ -177,7 +176,11 @@ const UserProfileScreen = () => {
               <View
                 style={[
                   styles.ageChip,
-                  { backgroundColor: "#A594F9", marginLeft: 10,marginBottom:10 },
+                  {
+                    backgroundColor: "#A594F9",
+                    marginLeft: 10,
+                    marginBottom: 10,
+                  },
                 ]}
               >
                 <Text style={styles.ageText}>
@@ -205,7 +208,7 @@ const UserProfileScreen = () => {
         )}
         keyExtractor={(item) => item.key}
       />
-      <FengShuiModal visible={modalVisible} onClose={closeModal} />
+      <FengShuiModal visible={modalVisible} onClose={closeModal} onSave={refreshData}/>
     </ImageBackground>
   );
 };
