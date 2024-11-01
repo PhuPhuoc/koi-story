@@ -14,6 +14,8 @@ import * as ImagePicker from "expo-image-picker";
 import { THEME_COLOR } from "../../constants/const";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebaseConfig";
+import { useAuth } from "../../context/auth.context";
+import { createConsult, CreateConsult } from "../../api/consult/consult_api";
 
 const uploadImageToFirebase = async (uri: string) => {
   try {
@@ -32,11 +34,17 @@ const uploadImageToFirebase = async (uri: string) => {
 };
 
 const AddConsult = ({ closeModal }: any) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [question, setQuestion] = useState("");
+  const { userData } = useAuth();
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [formData, setFormData] = useState<CreateConsult>({
+    title: "",
+    content: "",
+    user_id: "",
+    listImageUrls: [],
+  });
 
   const handleImagePicker = async () => {
     const permissionResult =
@@ -64,26 +72,49 @@ const AddConsult = ({ closeModal }: any) => {
   const handleRemoveImage = (indexToRemove: number) => {
     setImages(images.filter((_, index) => index !== indexToRemove));
   };
+  const updateField = (field: keyof CreateConsult, value: string | number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
 
   const handleSubmit = async () => {
-    if (!title || !description || !question || images.length === 0) {
-      Alert.alert("Validation Error", "All fields are required.");
-      return;
-    }
-    setLoading(true);
-    const imageUrls: string[] = [];
-    for (const image of images) {
-      const url = await uploadImageToFirebase(image);
-      if (url) {
-        imageUrls.push(url);
-      } else {
-        Alert.alert("Upload Error", "Failed to upload some images.");
-      }
-    }
+    console.log("Submitting form with data:", formData);
 
-    console.log("Uploaded Image URLs:", imageUrls);
-    setLoading(false);
-    closeModal();
+    try {
+      setIsSubmitting(true);
+      formData.listImageUrls = [];
+
+      for (const image of images) {
+        const url = await uploadImageToFirebase(image);
+        if (url) {
+          formData.listImageUrls.push(url);
+        } else {
+          Alert.alert(
+            "Upload Error",
+            "Failed to upload some images. Please retry."
+          );
+        }
+      }
+
+      formData.user_id = userData?.id ?? "";
+      const response = await createConsult(formData);
+      console.log(userData?.id);
+      if (typeof response === "string") {
+        throw new Error(response);
+      }
+      Alert.alert("Success", "Market post created successfully!");
+      closeModal();
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error instanceof Error ? error.message : "Failed to create market post"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -94,16 +125,16 @@ const AddConsult = ({ closeModal }: any) => {
       <TextInput
         style={styles.input}
         placeholder="Nhập tiêu đề"
-        value={title}
-        onChangeText={setTitle}
+        value={formData.title}
+        onChangeText={(value) => updateField("title", value)}
       />
 
       <Text style={styles.label}>Mô tả</Text>
       <TextInput
         style={[styles.input, styles.descriptionInput]}
-        placeholder="Nhập mô tả"
-        value={description}
-        onChangeText={setDescription}
+        placeholder="Nhập"
+        value={formData.content}
+        onChangeText={(value) => updateField("content", value)}
         multiline
         numberOfLines={4}
       />
