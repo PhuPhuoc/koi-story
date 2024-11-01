@@ -136,7 +136,7 @@ const UserProfileScreen = () => {
                 />
                 <View style={{ flex: 1, alignItems: "center" }}>
                   <Image
-                    source={{ uri: profile_picture_url }}
+                    source={{ uri: userData?.avatar }}
                     style={styles.profileImage}
                   />
                 </View>

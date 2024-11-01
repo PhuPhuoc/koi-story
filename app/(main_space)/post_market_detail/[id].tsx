@@ -166,6 +166,7 @@ const PostMarketDetail = () => {
       <GestureHandlerRootView style={styles.container}>
         <Feedback post_id={id as string} />
       </GestureHandlerRootView>
+      
       <ImageModal
         isVisible={isImageModalVisible}
         image_url={selectedImage ?? ""}

@@ -9,6 +9,7 @@ import {
   Alert,
 } from "react-native";
 import CommentMarket from "../modal_comment/modal_comment_market";
+import { useAuth } from "../../context/auth.context";
 
 interface FeedbackMarket {
   id: string;
@@ -16,6 +17,7 @@ interface FeedbackMarket {
   created_at: string;
   content: string;
   avatar: string;
+  user_id: string;
 }
 
 interface FeedbackMarketProps {
@@ -28,6 +30,8 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = ({post_id}) => {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
   const [feedbackList, setFeedbackList] = useState<FeedbackMarket[]>([]);
+
+  const { userData } = useAuth();
 
   const fetchComments = async () => {
     try {
@@ -47,6 +51,7 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = ({post_id}) => {
         created_at: item.created_at,
         content: item.content,
         avatar: item.avatar || "https://i.pravatar.cc/150?img=1",
+        user_id: item.user_id, 
       }));
       setFeedbackList(comments);
     } catch (error) {
@@ -61,7 +66,7 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = ({post_id}) => {
   const limitedFeedback = feedbackList.slice(0, 3);
 
   // Add a new comment
-  const handleAddComment = async (user_id: string) => {
+  const handleAddComment = async (user_id: string | undefined) => {
     if (newComment.trim()) {
       const response = await fetch(
         `http://api.koistory.site/api/v1/posts/${post_id}/comments`,
@@ -95,6 +100,7 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = ({post_id}) => {
           created_at: new Date().toLocaleString(),
           content: newComment.trim(),
           avatar: newCommentData.avatar,
+          user_id: newCommentData.user_id
         },
       ]);
       setNewComment("");
@@ -197,25 +203,27 @@ const FeedbackMarket: React.FC<FeedbackMarketProps> = ({post_id}) => {
       </View>
       <Text style={styles.comment}>{item.content}</Text>
 
-      <View style={styles.actionsContainer}>
-        <Pressable
-          style={styles.editButton}
-          onPress={() => {
-            setEditingCommentId(item.id);
-            setNewComment(item.content);
-            setModalVisible(true);
-          }}
-        >
-          <Text style={styles.actionText}>Edit</Text>
-        </Pressable>
+      {item.user_id === userData?.id && ( 
+        <View style={styles.actionsContainer}>
+          <Pressable
+            style={styles.editButton}
+            onPress={() => {
+              setEditingCommentId(item.id);
+              setNewComment(item.content);
+              setModalVisible(true);
+            }}
+          >
+            <Text style={styles.actionText}>Edit</Text>
+          </Pressable>
 
-        <Pressable
-          onPress={() => confirmDeleteComment(item.id)}
-          style={styles.deleteButton}
-        >
-          <Text style={styles.actionText}>Delete</Text>
-        </Pressable>
-      </View>
+          <Pressable
+            onPress={() => confirmDeleteComment(item.id)}
+            style={styles.deleteButton}
+          >
+            <Text style={styles.actionText}>Delete</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 
